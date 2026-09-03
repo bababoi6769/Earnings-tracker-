@@ -1,57 +1,124 @@
 # Earnings Tracker
 
-A simple and stylish web application for tracking earnings, payments, and currency conversions.
+A collection of personal finance tracking variants built to track earnings and manage financial activity.
 
-## Features
+## Available Versions
 
-- Track total earnings
-- Add new payment entries
+### Earnings Tracker — Dark Mode
+
+The original earnings tracker with a modern dark interface.
+
+Features include:
+
+- Track earnings
+- Add payment entries
 - View payment history
-- Remove payment entries
-- Live currency converter
+- Calculate total earnings
+- View average payments
 - Multiple currency options
-- Dark mode
-- Light theme
-- Girly Pop Pink theme
-- View average payment information
+- Currency converter
 - Local browser data storage
 
-## Themes
+### Earnings Tracker — Girly Pop Edition
 
-The Earnings Tracker includes multiple visual styles:
+A visually customized version of the Earnings Tracker with a pink and playful interface.
 
-- Dark Theme
-- Light Theme
-- Girly Pop Pink Theme
+Features include:
 
-## Currency Support
+- Track earnings
+- Add payment entries
+- View payment history
+- Calculate total earnings
+- View average payments
+- Multiple currency options
+- Currency converter
+- Local browser data storage
+- Girly Pop visual styling
 
-The application supports multiple currency options for tracking and converting earnings.
+### Ultimate Earnings Tracker
 
-Examples include:
+The advanced version of the project with expanded financial management and analytics features.
 
-- INR — Indian Rupee
-- USD — US Dollar
-- Other supported currencies
+#### Earnings Tracking
 
-## How to Use
+- Track total earnings
+- Add payment entries
+- Add payment sources
+- Select payment dates
+- View payment history
+- Delete payment entries
+- Calculate average payments
 
-1. Open the application.
-2. Enter the payment amount.
-3. Add the payment source or project name.
-4. Select the date.
-5. Click Add Entry.
-6. View your payment history and total earnings.
+#### Withdrawal System
 
-## Features Overview
+- Add cash withdrawals
+- Enter withdrawal amounts
+- Select withdrawal dates
+- Add withdrawal reasons or sources
+- Add optional notes
+- View withdrawal history
+- Delete withdrawal entries
 
-The application includes:
+#### Balance Management
 
-- Earnings dashboard
-- Payment logging system
+Automatically tracks:
+
+- Total Earnings
+- Total Withdrawn
+- Available Balance
+
+Available Balance:
+
+Total Earnings - Total Withdrawals
+
+#### Analytics
+
+The Ultimate version includes advanced financial analytics such as:
+
+- Earnings versus withdrawals charts
+- Balance trend charts
+- Monthly earnings analytics
+- Monthly withdrawal analytics
+- Payment source analytics
+- Highest payment
+- Highest withdrawal
+- Average payment
+- Average withdrawal
+- Most active month
+- Total transactions
+
+#### Date Filters
+
+Filter financial data by:
+
+- All Time
+- This Month
+- This Year
+- Last 30 Days
+- Custom Date Range
+
+#### Error Handling
+
+The Ultimate version includes a custom error handling system designed to provide a user-friendly recovery screen if a critical application error occurs.
+
+Features include:
+
+- User-friendly error messages
+- Try Again functionality
+- Handling for unexpected JavaScript errors
+- Handling for unhandled Promise errors
+- Safe handling of corrupted local data where supported
+
+## Common Features
+
+Depending on the version, the project includes:
+
+- Earnings tracking
+- Payment logging
 - Payment history
 - Currency conversion
-- Theme switching
+- Multiple currency options
+- Local browser data storage
 - Responsive design
 
 ## Built With
@@ -59,6 +126,8 @@ The application includes:
 - HTML
 - CSS
 - JavaScript
+- Chart.js
+- localStorage
 - Git
 - GitHub
 
@@ -68,8 +137,8 @@ bababoi6769
 
 ## Project Status
 
-Actively improving and adding new features.
+The project is actively being improved with new features and versions.
 
 ---
 
-Made by bababoi6769
+Earnings Tracker is available in multiple variants, ranging from a simple earnings tracker to the advanced Ultimate Earnings Tracker with withdrawals and financial analytics.
