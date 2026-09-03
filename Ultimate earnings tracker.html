@@ -1,0 +1,3995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>Claude Coding Earnings Tracker</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+  html, body { width: 100%; overflow-x: hidden; }
+  body {
+    background: #ffffff;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 40px 20px 80px;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+    padding-left: calc(20px + env(safe-area-inset-left));
+    padding-right: calc(20px + env(safe-area-inset-right));
+    display: flex;
+    justify-content: center;
+    transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .wrap {
+    width: 100%;
+    max-width: 460px;
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  @media (min-width: 768px) {
+    body { padding: 60px 40px 100px; }
+    .wrap { max-width: 920px; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes numberUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 8px #00ff40; }
+    50% { box-shadow: 0 0 16px #00ff40, 0 0 24px rgba(136, 145, 255, 0.4); }
+  }
+
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  @keyframes particleFloat {
+    0% {
+      transform: translateY(100vh) scale(0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 0.8;
+      transform: translateY(50vh) scale(1.5);
+    }
+    90% {
+      opacity: 0.3;
+    }
+    100% {
+      transform: translateY(-10vh) scale(0);
+      opacity: 0;
+    }
+  }
+
+  @keyframes rotate {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  @keyframes slotRoll {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-100%);
+    }
+  }
+
+  .amount {
+    font-size: clamp(34px, 9vw, 68px);
+    font-weight: 800;
+    background: linear-gradient(180deg, #ffffff 0%, #e8ecf5 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    letter-spacing: -1px;
+    position: relative; z-index: 1; display: inline-flex; align-items: baseline; gap: 3px;
+    flex-wrap: wrap; word-break: break-word;
+  }
+
+  .digit-wrapper {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    height: 1em;
+    line-height: 1;
+    vertical-align: baseline;
+    min-width: 0.65em;
+  }
+
+  .digit-column {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+  }
+
+  .digit {
+    display: block;
+    height: 1em;
+    line-height: 1;
+    font-weight: 800;
+    background: linear-gradient(180deg, #ffffff 0%, #e8ecf5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    flex-shrink: 0;
+  }
+
+  .amount .currency {
+    font-size: 0.5em;
+    font-weight: 700;
+    background: linear-gradient(180deg, #8891ff 0%, #8b5cf0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  @keyframes entrySlideIn {
+    0% {
+      transform: translateX(-100%) rotateY(-20deg);
+      opacity: 0;
+    }
+    70% {
+      transform: translateX(5px) rotateY(2deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(0) rotateY(0deg);
+      opacity: 1;
+    }
+  }
+
+  @keyframes celebration {
+    0%, 100% {
+      box-shadow: 0 24px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(139,92,240,0.05) inset;
+    }
+    25% {
+      box-shadow: 0 30px 90px rgba(139,92,240,0.4), 0 0 40px rgba(139,92,240,0.3) inset, 0 0 60px rgba(139,92,240,0.2);
+    }
+    50% {
+      box-shadow: 0 35px 100px rgba(139,92,240,0.5), 0 0 50px rgba(139,92,240,0.4) inset, 0 0 80px rgba(139,92,240,0.3);
+    }
+    75% {
+      box-shadow: 0 30px 90px rgba(139,92,240,0.4), 0 0 40px rgba(139,92,240,0.3) inset, 0 0 60px rgba(139,92,240,0.2);
+    }
+  }
+
+  .amount.cash-roll {
+    animation: cashRollIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .summary.celebrating {
+    animation: celebration 1.5s ease-in-out;
+  }
+
+  .entry.new-entry {
+    animation: entrySlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Background Particles */
+  .particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #8b5cf0;
+    border-radius: 50%;
+    opacity: 0;
+    animation: particleFloat 8s infinite ease-in-out;
+  }
+
+  .particles.intro-complete .particle {
+    animation: particleFloat 8s infinite ease-in-out;
+    animation-play-state: paused;
+    transition: opacity 2s ease;
+  }
+
+  /* Rotating Ring on Summary Card */
+  .ring {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border: 2px solid rgba(139,92,240,0.1);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: rotate 20s linear infinite;
+    pointer-events: none;
+    transition: border-color 0.6s ease;
+  }
+
+  .ring::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #8b5cf0;
+    border-radius: 50%;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 12px #8b5cf0;
+    transition: background 0.6s ease, box-shadow 0.6s ease;
+  }
+
+  @media (min-width: 768px) {
+    .ring {
+      width: 600px;
+      height: 600px;
+    }
+  }
+
+  .summary.intro-complete .ring {
+    animation: rotate 60s linear infinite;
+    transition: all 3s ease-out;
+  }
+
+  .summary {
+    background: linear-gradient(155deg, #fff0f6 0%, #ffd6e7 55%, #ffc2dc 100%);
+    border: 1px solid rgba(255, 105, 180, 0.45);
+    border-radius: 20px;
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 18px 50px rgba(255, 105, 180, 0.18),
+                0 0 0 1px rgba(255,255,255,0.5) inset;
+    margin-bottom: 16px;
+    width: 100%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .summary:hover {
+      box-shadow: 0 32px 90px rgba(0,0,0,0.65), 0 0 0 1px rgba(139,92,240,0.15) inset;
+      transform: translateY(-2px);
+      border-color: rgba(139, 92, 240, 0.45);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .summary {
+      padding: 48px 40px;
+      border-radius: 28px;
+      margin-bottom: 28px;
+    }
+  }
+  .summary::before {
+    content: "";
+    position: absolute;
+    top: -90px; right: -90px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(255,105,180,0.22) 0%, transparent 70%);
+    pointer-events: none;
+    animation: float 8s ease-in-out infinite;
+    transition: transform 3s ease-out, opacity 2s ease, background 0.6s ease;
+  }
+
+  @media (min-width: 768px) {
+    .summary::before {
+      width: 380px;
+      height: 380px;
+      top: -120px;
+      right: -120px;
+    }
+  }
+
+  .summary.intro-complete::before {
+    animation: float 20s ease-in-out infinite;
+  }
+
+  .summary::after {
+    content: "";
+    position: absolute;
+    bottom: -70px; left: -70px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(255,105,180,0.22) 0%, transparent 70%);
+    pointer-events: none;
+    animation: float 10s ease-in-out infinite reverse;
+    transition: transform 3s ease-out, opacity 2s ease, background 0.6s ease;
+  }
+
+  .summary.intro-complete::after {
+    animation: float 25s ease-in-out infinite reverse;
+  }
+  }
+
+  @media (min-width: 768px) {
+    .summary::after {
+      width: 300px;
+      height: 300px;
+      bottom: -100px;
+      left: -100px;
+    }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(20px, 20px) scale(1.1); }
+  }
+  .top-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px; position: relative; z-index: 1;
+  }
+  .badge {
+    display: flex; align-items: center; gap: 7px;
+    background: rgba(139,92,240,0.12);
+    border: 1px solid rgba(139,92,240,0.35);
+    color: #8891ff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+    padding: 5px 10px 5px 8px;
+    border-radius: 20px;
+    transition: background 0.6s ease, border-color 0.6s ease, color 0.6s ease;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00ff40;
+    box-shadow: 0 0 8px #00ff40;
+    flex-shrink: 0;
+    animation: glow 2s ease-in-out infinite;
+    transition: background 0.6s ease, box-shadow 0.6s ease;
+  }
+
+  @media (min-width: 768px) {
+    .dot { width: 8px; height: 8px; }
+  }
+
+  .summary.intro-complete .dot {
+    animation: glow 4s ease-in-out infinite;
+  }
+  .count { color: #6b7590; font-size: 12px; white-space: nowrap; transition: color 0.6s ease; }
+
+  @media (min-width: 768px) {
+    .badge { font-size: 12px; padding: 7px 14px 7px 10px; }
+    .count { font-size: 14px; }
+  }
+
+  .label { color: #97a0ba; font-size: 13px; font-weight: 500; margin-bottom: 6px; position: relative; z-index: 1; transition: color 0.6s ease; }
+
+  @media (min-width: 768px) {
+    .label { font-size: 16px; margin-bottom: 10px; }
+  }
+  .amount {
+    font-size: clamp(34px, 9vw, 68px);
+    font-weight: 800;
+    background: linear-gradient(180deg, #ffffff 0%, #e8ecf5 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    letter-spacing: -1px;
+    position: relative; z-index: 1; display: flex; align-items: baseline; gap: 3px;
+    flex-wrap: wrap; word-break: break-word;
+    transition: all 0.3s ease;
+    animation: numberUp 0.5s ease-out;
+  }
+  .amount .currency {
+    font-size: 0.5em; font-weight: 700;
+    background: linear-gradient(180deg, #8891ff 0%, #8b5cf0 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .sub-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 16px; padding-top: 14px;
+    border-top: 1px solid rgba(139,92,240,0.15);
+    position: relative; z-index: 1;
+    transition: border-color 0.6s ease;
+  }
+  .sub-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    animation: slideIn 0.6s ease-out backwards;
+  }
+  .sub-stat:nth-child(1) { animation-delay: 0.2s; }
+  .sub-stat:nth-child(2) { animation-delay: 0.3s; }
+
+  .sub-stat-val {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    transition: color 0.6s ease;
+  }
+
+  @media (min-width: 768px) {
+    .sub-stat-val { font-size: 20px; }
+    .sub-stat-key { font-size: 11px; }
+  }
+
+  .sub-stat-key {
+    color: #6b7590;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    transition: color 0.6s ease;
+  }
+
+  .add-card {
+    background: #fff5f9;
+    border: 1px solid rgba(255, 105, 180, 0.30);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 16px;
+    width: 100%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .add-card:hover {
+      border-color: rgba(139, 92, 240, 0.35);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      transform: translateY(-1px);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .add-card {
+      padding: 32px;
+      border-radius: 24px;
+      margin-bottom: 28px;
+    }
+  }
+  .add-title {
+    color: #8b5cf0;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 12px;
+    transition: color 0.6s ease;
+  }
+
+  @media (min-width: 768px) {
+    .add-title { font-size: 13px; margin-bottom: 20px; }
+  }
+  .field-row { display: flex; gap: 8px; margin-bottom: 10px; width: 100%; max-width: 100%; }
+
+  @media (min-width: 768px) {
+    .field-row { gap: 16px; margin-bottom: 18px; }
+  }
+
+  .field { flex: 1; min-width: 0; max-width: 100%; display: flex; flex-direction: column; gap: 5px; }
+
+  @media (min-width: 768px) {
+    .field { gap: 8px; }
+  }
+
+  .field label {
+    color: #6b7590;
+    font-size: 11px;
+    font-weight: 600;
+    transition: color 0.6s ease;
+  }
+
+  @media (min-width: 768px) {
+    .field label { font-size: 13px; }
+  }
+  input {
+    background: #070a13;
+    border: 1px solid rgba(139,92,240,0.25);
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 10px;
+    border-radius: 9px;
+    outline: none;
+    width: 100%;
+    min-width: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease, color 0.6s ease;
+    touch-action: manipulation;
+  }
+
+  input:focus {
+    border-color: #8b5cf0;
+    box-shadow: 0 0 0 3px rgba(139, 92, 240, 0.15);
+    transform: translateY(-1px);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    input:hover:not(:focus) {
+      border-color: rgba(139,92,240,0.35);
+    }
+  }
+
+  @media (min-width: 768px) {
+    input {
+      padding: 14px 16px;
+      border-radius: 12px;
+    }
+  }
+  input[type="date"] {
+    max-width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 8px;
+    color-scheme: dark;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.7) sepia(1) saturate(2) hue-rotate(220deg);
+    margin-left: 4px;
+  }
+  button {
+    background: linear-gradient(180deg, #8891ff 0%, #8b5cf0 100%);
+    color: #08090f;
+    border: none;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 4px;
+    box-shadow: 0 4px 14px rgba(139,92,240,0.25);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, color 0.6s ease, box-shadow 0.6s ease;
+    position: relative;
+    overflow: hidden;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(139,92,240,0.4);
+    }
+  }
+
+  button:active {
+    transform: scale(0.98) translateY(0);
+  }
+
+  button:active::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  @media (min-width: 768px) {
+    button {
+      font-size: 16px;
+      padding: 16px 24px;
+      border-radius: 14px;
+      margin-top: 8px;
+    }
+  }
+
+  .log-title {
+    color: #97a0ba;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 4px 0 10px;
+    transition: color 0.6s ease;
+  }
+
+  @media (min-width: 768px) {
+    .log-title { font-size: 13px; margin: 12px 0 16px; }
+  }
+  .entry {
+    background: #10182b;
+    border: 1px solid rgba(139, 92, 240, 0.12);
+    border-radius: 13px;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 10px;
+    width: 100%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease;
+    animation: slideIn 0.4s ease-out backwards;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .entry:hover {
+      background: #141d33;
+      border-color: rgba(139, 92, 240, 0.25);
+      transform: translateX(4px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .entry {
+      padding: 18px 20px;
+      border-radius: 16px;
+      margin-bottom: 12px;
+    }
+  }
+  .entry-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .entry-source {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.6s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .entry:hover .entry-source {
+      color: #8891ff;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .entry-source { font-size: 16px; }
+    .entry-date { font-size: 13px; }
+  }
+
+  .entry-date {
+    color: #6b7590;
+    font-size: 11px;
+    transition: color 0.6s ease;
+  }
+
+  .entry-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 768px) {
+    .entry-right { gap: 16px; }
+  }
+
+  .entry-amount {
+    color: #8891ff;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: transform 0.3s ease, color 0.6s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .entry:hover .entry-amount {
+      transform: scale(1.05);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .entry-amount { font-size: 18px; }
+  }
+  .del-btn {
+    background: transparent;
+    border: none;
+    color: #6b7590;
+    font-size: 17px;
+    width: auto;
+    padding: 4px 6px;
+    cursor: pointer;
+    margin: 0;
+    line-height: 1;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.6s ease, background 0.6s ease;
+    border-radius: 6px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .del-btn:hover {
+      color: #ff6b6b;
+      background: rgba(255, 107, 107, 0.1);
+      transform: scale(1.15);
+    }
+  }
+
+  .del-btn:active {
+    transform: scale(0.95);
+  }
+
+  @media (min-width: 768px) {
+    .del-btn { font-size: 20px; padding: 6px 8px; }
+  }
+  .empty { color: #6b7590; font-size: 13px; text-align: center; padding: 20px 0; transition: color 0.6s ease; }
+  .status { font-size: 11px; color: #6b7590; margin-top: 8px; min-height: 14px; text-align: center; transition: color 0.6s ease; }
+
+  .brand-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding: 0 2px;
+    animation: slideIn 0.5s ease-out;
+  }
+
+  @media (min-width: 768px) {
+    .brand-header { margin-bottom: 32px; padding: 0 4px; }
+  }
+
+  .brand-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .brand-name {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    background: linear-gradient(135deg, #8891ff 0%, #8b5cf0 50%, #8891ff 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    transition: all 0.3s ease, background 0.6s ease;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  @media (min-width: 768px) {
+    .brand-name { font-size: 28px; }
+  }
+
+  .brand-header.intro-complete .brand-name {
+    animation: shimmer 8s ease-in-out infinite;
+  }
+
+  .brand-sub {
+    font-size: 11px;
+    color: #6b7590;
+    letter-spacing: 0.4px;
+    transition: color 0.6s ease;
+  }
+
+  @media (min-width: 768px) {
+    .brand-sub { font-size: 14px; }
+  }
+
+  .brand-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(139,92,240,0.10);
+    border: 1px solid rgba(139,92,240,0.3);
+    color: #8891ff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 11px;
+    border-radius: 20px;
+    white-space: nowrap;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease, color 0.6s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .brand-tag:hover {
+      background: rgba(139,92,240,0.15);
+      border-color: rgba(139,92,240,0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(139,92,240,0.2);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .brand-tag { font-size: 13px; padding: 8px 16px; gap: 8px; }
+  }
+
+  .converter-card {
+    background: #10182b;
+    border: 1px solid rgba(139, 92, 240, 0.18);
+    border-radius: 16px;
+    padding: 18px;
+    margin-top: 16px;
+    width: 100%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .converter-card:hover {
+      border-color: rgba(139, 92, 240, 0.35);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      transform: translateY(-1px);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .converter-card {
+      padding: 24px;
+      border-radius: 20px;
+      margin-top: 28px;
+    }
+  }
+
+  .converter-title {
+    color: #8b5cf0;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.6s ease;
+  }
+
+  @media (min-width: 768px) {
+    .converter-title { font-size: 13px; margin-bottom: 18px; }
+  }
+
+  .rate-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .rate-pair {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .rate-label {
+    color: #6b7590;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    transition: color 0.6s ease;
+  }
+
+  .rate-value {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    transition: color 0.6s ease;
+  }
+
+  @media (min-width: 768px) {
+    .rate-value { font-size: 24px; }
+  }
+
+  .rate-arrow {
+    color: #d4a853;
+    font-size: 20px;
+    margin: 0 8px;
+    transition: color 0.6s ease;
+  }
+
+  .converter-inputs {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+  }
+
+  .converter-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .converter-field label {
+    color: #6b7590;
+    font-size: 11px;
+    font-weight: 600;
+    transition: color 0.6s ease;
+  }
+
+  .converter-field input {
+    background: #070a13;
+    border: 1px solid rgba(139,92,240,0.25);
+    color: #fff;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 9px;
+    outline: none;
+    width: 100%;
+    transition: all 0.3s ease, background 0.6s ease, border-color 0.6s ease, color 0.6s ease;
+  }
+
+  .converter-field input:focus {
+    border-color: #8b5cf0;
+    box-shadow: 0 0 0 3px rgba(139, 92, 240, 0.15);
+  }
+
+  @media (min-width: 768px) {
+    .converter-field input {
+      padding: 12px;
+    }
+  }
+
+  .rate-info {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(212,168,83,0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: #6b7590;
+    transition: border-color 0.6s ease, color 0.6s ease;
+  }
+
+  .rate-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .rate-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 8px #4ade80;
+    animation: glow 2s ease-in-out infinite;
+  }
+
+  .rate-dot.loading {
+    background: #e6c17a;
+    box-shadow: 0 0 8px #e6c17a;
+  }
+
+  .rate-dot.error {
+    background: #ff6b6b;
+    box-shadow: 0 0 8px #ff6b6b;
+  }
+
+  /* Currency Selector */
+  .currency-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .currency-selector label {
+    color: #6b7590;
+    font-size: 11px;
+    font-weight: 600;
+    transition: color 0.6s ease;
+  }
+
+  .currency-selector select {
+    background: #070a13;
+    border: 1px solid rgba(139,92,240,0.25);
+    color: #fff;
+    font-size: 16px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease, color 0.6s ease;
+    touch-action: manipulation;
+  }
+
+  .currency-selector select:focus {
+    border-color: #8b5cf0;
+    box-shadow: 0 0 0 3px rgba(139, 92, 240, 0.15);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .currency-selector select:hover {
+      border-color: rgba(139,92,240,0.35);
+    }
+  }
+
+  body.light-theme .currency-selector label {
+    color: #5a6478;
+  }
+
+ body.light-theme .currency-selector select {
+    background: #fffafd;
+    border: 1px solid rgba(255, 105, 180, 0.35);
+    color: #4a2135;
+}
+
+  body.light-theme .currency-selector select:focus {
+    background: #ffffff;
+    border-color: #ff4fa3;
+    box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.15);
+}
+
+  /* Converter Currency Selectors */
+  .converter-currency-selectors {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .converter-currency-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .converter-currency-row label {
+    color: #6b7590;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 40px;
+    transition: color 0.6s ease;
+  }
+
+  .converter-currency-row select {
+    background: #070a13;
+    border: 1px solid rgba(139,92,240,0.25);
+    color: #fff;
+    font-size: 16px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease, color 0.6s ease;
+    touch-action: manipulation;
+    flex: 1;
+  }
+
+  .converter-currency-row select:focus {
+    border-color: #8b5cf0;
+    box-shadow: 0 0 0 3px rgba(139, 92, 240, 0.15);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .converter-currency-row select:hover {
+      border-color: rgba(139,92,240,0.35);
+    }
+  }
+
+  body.light-theme .converter-currency-row label {
+    color: #5a6478;
+  }
+
+  body.light-theme .converter-currency-row select {
+    background: #fffafd;
+    border: 1px solid rgba(255, 105, 180, 0.35);
+    color: #4a2135;
+}
+
+  body.light-theme .converter-currency-row select:focus {
+    background: #ffffff;
+    border-color: #ff4fa3;
+    box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.15);
+}
+
+  /* =========================================
+     DASHBOARD, FILTERS, WITHDRAWALS & ANALYTICS (base / dark look)
+     ========================================= */
+
+  textarea {
+    background: #070a13;
+    border: 1px solid rgba(139,92,240,0.25);
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 10px;
+    border-radius: 9px;
+    outline: none;
+    width: 100%;
+    min-width: 0;
+    resize: vertical;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease, color 0.6s ease;
+    touch-action: manipulation;
+  }
+
+  textarea:focus {
+    border-color: #8b5cf0;
+    box-shadow: 0 0 0 3px rgba(139, 92, 240, 0.15);
+    transform: translateY(-1px);
+  }
+
+  @media (min-width: 768px) {
+    textarea { padding: 14px 16px; border-radius: 12px; }
+  }
+
+  /* Filter bar */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (min-width: 768px) { .filter-bar { margin-bottom: 28px; gap: 14px; } }
+
+  .filter-label {
+    color: #8f97aa;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    transition: color 0.6s ease;
+  }
+
+  .filter-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .pill {
+    background: rgba(124, 92, 255, 0.10);
+    border: 1px solid rgba(139, 92, 246, 0.30);
+    color: #b8a5ff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 13px;
+    border-radius: 20px;
+    cursor: pointer;
+    width: auto;
+    margin: 0;
+    box-shadow: none;
+    overflow: hidden;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease, color 0.6s ease, box-shadow 0.6s ease;
+  }
+
+  .pill::before { background: rgba(255, 255, 255, 0.25); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .pill:hover {
+      border-color: rgba(139, 92, 246, 0.60);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(124, 92, 255, 0.15);
+    }
+  }
+
+  .pill.active {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d4edb 100%);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 4px 14px rgba(109, 78, 219, 0.35);
+  }
+
+  .custom-range {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 460px;
+  }
+
+  @media (min-width: 768px) { .custom-range { gap: 16px; max-width: 520px; } }
+
+  /* Dashboard stat cards */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  @media (min-width: 768px) {
+    .stat-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+  }
+
+  .stat-card {
+    background: #121827;
+    border: 1px solid rgba(124, 92, 255, 0.28);
+    border-radius: 16px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .stat-card:hover {
+      border-color: rgba(139, 92, 246, 0.50);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(124, 92, 255, 0.12);
+    }
+  }
+
+  @media (min-width: 768px) { .stat-card { padding: 20px; border-radius: 20px; } }
+
+  .stat-label {
+    color: #8f97aa;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.6s ease;
+  }
+
+  .stat-value {
+    color: #f1f1f5;
+    font-size: 18px;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.6s ease;
+  }
+
+  .stat-withdrawn { color: #ff7eb6; }
+  .stat-balance { color: #4ade80; }
+
+  .stat-card-balance {
+    border-color: rgba(34, 197, 94, 0.35);
+    background: linear-gradient(160deg, #121827 0%, #0f1f1a 100%);
+    box-shadow: 0 0 24px rgba(34, 197, 94, 0.07);
+  }
+
+  @media (min-width: 768px) { .stat-value { font-size: 24px; } }
+
+  /* Two-up layout for forms & histories */
+  .duo-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  @media (min-width: 900px) {
+    .duo-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+  }
+
+  /* Withdrawal entries */
+  .entry-notes {
+    color: #6b7590;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.6s ease;
+  }
+
+  .entry-amount-withdrawal { color: #ff6b9d; }
+
+  /* Analytics dashboard */
+  .analytics-card {
+    background: #121827;
+    border: 1px solid rgba(124, 92, 255, 0.28);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 16px;
+    width: 100%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .analytics-card:hover {
+      border-color: rgba(139, 92, 240, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transform: translateY(-1px);
+    }
+  }
+
+  @media (min-width: 768px) { .analytics-card { padding: 32px; border-radius: 24px; margin-bottom: 28px; } }
+
+  .fin-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 2px 0 18px;
+  }
+
+  @media (min-width: 768px) { .fin-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; } }
+
+  .fin-card {
+    background: #0c101c;
+    border: 1px solid rgba(124, 92, 255, 0.20);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .fin-card:hover { border-color: rgba(139, 92, 246, 0.45); transform: translateY(-1px); }
+  }
+
+  @media (min-width: 768px) { .fin-card { padding: 16px; border-radius: 16px; } }
+
+  .fin-label {
+    color: #8f97aa;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.6s ease;
+  }
+
+  .fin-value {
+    color: #f1f1f5;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.6s ease;
+  }
+
+  @media (min-width: 768px) { .fin-value { font-size: 18px; } }
+
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  @media (min-width: 900px) {
+    .chart-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .chart-box-wide { grid-column: span 2; }
+  }
+
+  .chart-box {
+    background: #0c101c;
+    border: 1px solid rgba(124, 92, 255, 0.20);
+    border-radius: 14px;
+    padding: 14px;
+    min-width: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease;
+  }
+
+  @media (min-width: 768px) { .chart-box { padding: 18px; border-radius: 18px; } }
+
+  .chart-title {
+    color: #b8a5ff;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    transition: color 0.6s ease;
+  }
+
+  .chart-wrap { position: relative; height: 240px; }
+  @media (min-width: 768px) { .chart-wrap { height: 280px; } }
+  .chart-empty { padding: 28px 0; }
+
+  /* =========================================
+     ERROR SCREEN & DATA RECOVERY (hidden unless needed)
+     ========================================= */
+  .error-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(8, 11, 20, 0.85);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  .error-screen[hidden],
+  .recovery-banner[hidden] { display: none !important; }
+
+  body.error-mode { overflow: hidden; }
+
+  .error-card {
+    background: linear-gradient(155deg, #151a2e 0%, #1c1b3a 55%, #161a2d 100%);
+    border: 1px solid rgba(124, 92, 255, 0.45);
+    border-radius: 22px;
+    padding: 36px 28px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55), 0 0 40px rgba(124, 92, 255, 0.10);
+  }
+
+  .error-icon { font-size: 44px; margin-bottom: 14px; }
+
+  .error-title {
+    color: #f1f1f5;
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .error-text {
+    color: #8f97aa;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+
+  .error-btns { display: flex; gap: 12px; }
+  .error-btns button { width: auto; flex: 1; margin-top: 0; }
+
+  .error-btns .error-btn-ghost,
+  .recovery-btns .recovery-btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(139, 92, 246, 0.45);
+    color: #b8a5ff;
+    box-shadow: none;
+  }
+
+  .error-btns .error-btn-ghost:hover,
+  .recovery-btns .recovery-btn-ghost:hover {
+    background: rgba(139, 92, 246, 0.12);
+    border-color: rgba(139, 92, 246, 0.70);
+    box-shadow: none;
+  }
+
+  .recovery-banner {
+    position: fixed;
+    top: calc(16px + env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1500;
+    width: calc(100% - 32px);
+    max-width: 520px;
+    background: #121827;
+    border: 1px solid rgba(212, 168, 83, 0.40);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    animation: slideIn 0.4s ease-out;
+  }
+
+  .recovery-text {
+    color: #e8eaf0;
+    font-size: 13px;
+    font-weight: 600;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .recovery-btns { display: flex; gap: 8px; flex-shrink: 0; }
+
+  .recovery-btn {
+    width: auto;
+    margin: 0;
+    font-size: 12px;
+    padding: 9px 14px;
+    border-radius: 10px;
+  }
+
+  /* Theme Toggle */
+  .theme-toggle {
+    position: fixed;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    right: calc(24px + env(safe-area-inset-right));
+    background: rgba(212,168,83,0.12);
+    border: 1px solid rgba(212,168,83,0.35);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .theme-toggle:hover {
+      background: rgba(212,168,83,0.2);
+      border-color: rgba(212,168,83,0.5);
+      transform: scale(1.1) rotate(15deg);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+  }
+
+  .theme-icon {
+    font-size: 22px;
+    transition: transform 0.3s ease;
+  }
+
+  /* Light Theme */
+  body.light-theme {
+    background: #fff7fb;
+}
+
+  body.light-theme .summary {
+    background: linear-gradient(155deg, #ffffff 0%, #fffbf5 55%, #ffffff 100%);
+    border: 1px solid rgba(212, 168, 83, 0.35);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 0 0 1px rgba(212,168,83,0.08) inset;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.light-theme .summary:hover {
+      box-shadow: 0 12px 48px rgba(0,0,0,0.12), 0 0 0 1px rgba(212,168,83,0.15) inset;
+      border-color: rgba(212, 168, 83, 0.45);
+    }
+  }
+
+  body.light-theme .summary::before {
+    background: radial-gradient(circle, rgba(255, 105, 180, 0.18) 0%, transparent 70%);
+  }
+
+  body.light-theme .summary::after {
+    background: radial-gradient(circle, rgba(255, 105, 180, 0.18) 0%, transparent 70%);
+  }
+
+  body.light-theme .ring {
+    border: 2px solid rgba(255, 105, 180, 0.18);
+  }
+
+  body.light-theme .ring::before {
+    background: #ff69b4;
+    box-shadow: 0 0 12px #ff69b4;
+  }
+
+ body.light-theme .badge {
+    background: rgba(255, 105, 180, 0.12);
+    border: 1px solid rgba(255, 105, 180, 0.45);
+    color: #d63384;
+}
+
+body.light-theme .dot {
+    background: #ff4fa3;
+    box-shadow: 0 0 8px #ff4fa3;
+}
+
+  body.light-theme .count {
+    color: #5a6478;
+  }
+
+  body.light-theme .label {
+    color: #4a5568;
+  }
+
+body.light-theme .amount {
+    background: linear-gradient(
+        180deg,
+        #4a2135 0%,
+        #7a3158 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+body.light-theme .amount .currency {
+    background: linear-gradient(
+        180deg,
+        #ff69b4 0%,
+        #c084fc 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+  body.light-theme .digit {
+    background: linear-gradient(
+        180deg,
+        #4a2135 0%,
+        #7a3158 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+  body.light-theme .sub-row {
+    border-top: 1px solid rgba(212,168,83,0.25);
+  }
+
+  body.light-theme .sub-stat-val {
+    color: #1a1a1a;
+  }
+
+  body.light-theme .sub-stat-key {
+    color: #5a6478;
+  }
+
+  body.light-theme .add-card,
+body.light-theme .converter-card {
+    background: #fff5f9;
+    border: 1px solid rgba(255, 105, 180, 0.28);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.08);
+}
+
+  @media (hover: hover) and (pointer: fine) {
+   body.light-theme .add-card:hover,
+body.light-theme .converter-card:hover {
+    border-color: rgba(255, 79, 163, 0.50);
+    box-shadow: 0 10px 28px rgba(255, 105, 180, 0.15);
+}
+  }
+
+  body.light-theme .add-title,
+  body.light-theme .converter-title {
+    color: #a67c3d;
+  }
+
+  body.light-theme .field label,
+  body.light-theme .converter-field label {
+    color: #5a6478;
+  }
+
+ body.light-theme input {
+    background: #fffafd;
+    border: 1px solid rgba(255, 105, 180, 0.35);
+    color: #4a2135;
+}
+
+  body.light-theme input:focus {
+    background: #ffffff;
+    border-color: #ff4fa3;
+    box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.15);
+}
+
+  @media (hover: hover) and (pointer: fine) {
+    body.light-theme input:hover:not(:focus) {
+      border-color: rgba(212,168,83,0.4);
+    }
+  }
+
+  body.light-theme button {
+    background: linear-gradient(180deg, #f0cd80 0%, #d4a853 100%);
+    color: #14100a;
+    box-shadow: 0 4px 14px rgba(212,168,83,0.3);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.light-theme button:hover {
+      box-shadow: 0 8px 24px rgba(212,168,83,0.45);
+    }
+  }
+
+  body.light-theme .log-title {
+    color: #4a5568;
+  }
+
+  body.light-theme .entry {
+    background: #fff5f9;
+    border: 1px solid rgba(255, 105, 180, 0.25);
+    box-shadow: 0 6px 18px rgba(255, 105, 180, 0.08);
+}
+
+  @media (hover: hover) and (pointer: fine) {
+    body.light-theme .entry:hover {
+    background: #fff0f6;
+    border-color: rgba(255, 105, 180, 0.40);
+    box-shadow: 0 8px 20px rgba(255, 105, 180, 0.12);
+}
+  }
+
+  body.light-theme .entry-source {
+    color: #4a2135;
+}
+
+  @media (hover: hover) and (pointer: fine) {
+   body.light-theme .entry:hover .entry-source {
+    color: #d63384;
+}
+  }
+
+  body.light-theme .entry-date {
+    color: #5a6478;
+  }
+
+  body.light-theme .entry-amount {
+    color: #a67c3d;
+  }
+
+  body.light-theme .del-btn {
+    color: #5a6478;
+  }
+
+  body.light-theme .empty {
+    color: #5a6478;
+  }
+
+  body.light-theme .status {
+    color: #5a6478;
+  }
+
+  body.light-theme .brand-name {
+    background: linear-gradient(135deg, #f0cd80 0%, #d4a853 50%, #f0cd80 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  body.light-theme .brand-sub {
+    color: #5a6478;
+  }
+
+  body.light-theme .brand-tag {
+    background: rgba(212,168,83,0.15);
+    border: 1px solid rgba(212,168,83,0.35);
+    color: #a67c3d;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.light-theme .brand-tag:hover {
+      background: rgba(212,168,83,0.25);
+      border-color: rgba(212,168,83,0.5);
+    }
+  }
+
+  body.light-theme .rate-label,
+  body.light-theme .rate-info {
+    color: #5a6478;
+  }
+
+  body.light-theme .rate-value {
+    color: #1a1a1a;
+  }
+
+  body.light-theme .rate-arrow {
+    color: #a67c3d;
+  }
+
+  body.light-theme .rate-info {
+    border-top: 1px solid rgba(212,168,83,0.25);
+  }
+
+  body.light-theme .theme-toggle {
+    background: rgba(212,168,83,0.15);
+    border: 1px solid rgba(212,168,83,0.35);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.light-theme .theme-toggle:hover {
+      background: rgba(212,168,83,0.25);
+      border-color: rgba(212,168,83,0.5);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+  }
+
+  body.light-theme .particle {
+    background: #d4a853;
+  }
+
+  body.light-theme .converter-field input {
+    background: #fffafd;
+    border: 1px solid rgba(255, 105, 180, 0.35);
+    color: #4a2135;
+}
+  body.light-theme .converter-field input:focus {
+    background: #ffffff;
+    border-color: #ff4fa3;
+    box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.15);
+}
+/* =========================================
+   DARK THEME - FINAL OVERRIDE
+   ========================================= */
+
+/* Main page */
+body:not(.light-theme):not(.girly-theme) {
+    background: #080b14 !important;
+    color: #e8eaf0 !important;
+}
+
+/* Main earnings card */
+body:not(.light-theme):not(.girly-theme) .summary {
+    background: linear-gradient(
+        135deg,
+        #151a2e 0%,
+        #1c1b3a 50%,
+        #161a2d 100%
+    ) !important;
+
+    border: 1px solid rgba(124, 92, 255, 0.45) !important;
+
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.35),
+        0 0 30px rgba(124, 92, 255, 0.08) !important;
+}
+
+/* Main lower cards */
+body:not(.light-theme):not(.girly-theme) .add-card,
+body:not(.light-theme):not(.girly-theme) .converter-card {
+    background: #121827 !important;
+
+    border: 1px solid rgba(124, 92, 255, 0.28) !important;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Payment history entries */
+body:not(.light-theme):not(.girly-theme) #logList .entry {
+    background: #182033 !important;
+
+    border: 1px solid rgba(124, 92, 255, 0.22) !important;
+
+    box-shadow:
+        0 5px 16px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* Entry hover */
+body:not(.light-theme):not(.girly-theme) #logList .entry:hover {
+    background: #1d263b !important;
+
+    border-color: rgba(139, 92, 246, 0.55) !important;
+
+    box-shadow:
+        0 8px 22px rgba(124, 92, 255, 0.12) !important;
+}
+
+/* All inputs */
+body:not(.light-theme):not(.girly-theme) input,
+body:not(.light-theme):not(.girly-theme) select,
+body:not(.light-theme):not(.girly-theme) .converter-card input,
+body:not(.light-theme):not(.girly-theme) .converter-card select {
+    background: #0c101c !important;
+
+    color: #e8eaf0 !important;
+
+    border: 1px solid rgba(124, 92, 255, 0.32) !important;
+}
+
+/* Input focus */
+body:not(.light-theme):not(.girly-theme) input:focus,
+body:not(.light-theme):not(.girly-theme) select:focus {
+    background: #101522 !important;
+
+    border-color: #8b5cf6 !important;
+
+    box-shadow:
+        0 0 0 3px rgba(139, 92, 246, 0.16) !important;
+}
+
+/* Labels */
+body:not(.light-theme):not(.girly-theme) label,
+body:not(.light-theme):not(.girly-theme) .field label,
+body:not(.light-theme):not(.girly-theme) .converter-field label {
+    color: #9ca3b8 !important;
+}
+
+/* Card titles */
+body:not(.light-theme):not(.girly-theme) .add-title,
+body:not(.light-theme):not(.girly-theme) .converter-title {
+    color: #a78bfa !important;
+}
+
+/* Main amount */
+body:not(.light-theme):not(.girly-theme) .amount,
+body:not(.light-theme):not(.girly-theme) .digit {
+    color: #f1f1f5 !important;
+
+    -webkit-text-fill-color: #f1f1f5 !important;
+
+    background: none !important;
+}
+
+/* Currency symbol */
+body:not(.light-theme):not(.girly-theme) .currency {
+    color: #a78bfa !important;
+
+    -webkit-text-fill-color: #a78bfa !important;
+}
+
+/* Statistics */
+body:not(.light-theme):not(.girly-theme) .sub-stat-val {
+    color: #f1f1f5 !important;
+}
+
+body:not(.light-theme):not(.girly-theme) .sub-stat-key {
+    color: #81889b !important;
+}
+
+/* Divider */
+body:not(.light-theme):not(.girly-theme) .sub-row {
+    border-color: rgba(124, 92, 255, 0.18) !important;
+}
+
+/* Payment history text */
+body:not(.light-theme):not(.girly-theme) .entry-source {
+    color: #f1f1f5 !important;
+}
+
+body:not(.light-theme):not(.girly-theme) .entry-date {
+    color: #8f97aa !important;
+}
+
+body:not(.light-theme):not(.girly-theme) .entry-amount {
+    color: #a78bfa !important;
+}
+
+/* Add Entry button */
+body:not(.light-theme):not(.girly-theme) button {
+    background: linear-gradient(
+        135deg,
+        #8b5cf6 0%,
+        #6d4edb 50%,
+        #5b3fc4 100%
+    ) !important;
+
+    color: #ffffff !important;
+
+    box-shadow:
+        0 6px 18px rgba(109, 78, 219, 0.30) !important;
+}
+
+/* Button hover */
+body:not(.light-theme):not(.girly-theme) button:hover {
+    box-shadow:
+        0 10px 25px rgba(139, 92, 246, 0.40) !important;
+}
+
+/* Badge */
+body:not(.light-theme):not(.girly-theme) .badge {
+    background: rgba(124, 92, 255, 0.12) !important;
+
+    border: 1px solid rgba(139, 92, 246, 0.38) !important;
+
+    color: #b8a5ff !important;
+}
+
+/* Status dot */
+body:not(.light-theme):not(.girly-theme) .dot {
+    background: #22c55e !important;
+
+    box-shadow:
+        0 0 8px #22c55e,
+        0 0 14px rgba(34, 197, 94, 0.45) !important;
+}
+
+/* Brand name */
+body:not(.light-theme):not(.girly-theme) .brand-name {
+    color: #b8a5ff !important;
+
+    -webkit-text-fill-color: #b8a5ff !important;
+
+    background: none !important;
+}
+
+/* Converter values */
+body:not(.light-theme):not(.girly-theme) .rate-value {
+    color: #f1f1f5 !important;
+}
+
+body:not(.light-theme):not(.girly-theme) .rate-label {
+    color: #8f97aa !important;
+}
+
+body:not(.light-theme):not(.girly-theme) .rate-arrow {
+    color: #a78bfa !important;
+}
+
+/* Theme toggle */
+body:not(.light-theme):not(.girly-theme) .theme-toggle {
+    background: #151a29 !important;
+
+    border: 1px solid rgba(139, 92, 246, 0.35) !important;
+
+    box-shadow:
+        0 5px 18px rgba(0, 0, 0, 0.30) !important;
+}
+  /* =========================================
+     LIGHT THEME — DASHBOARD, FILTERS, WITHDRAWALS & ANALYTICS
+     ========================================= */
+
+  body.light-theme .filter-label { color: #5a6478; }
+
+  body.light-theme .pill {
+    background: rgba(212, 168, 83, 0.12);
+    border: 1px solid rgba(212, 168, 83, 0.35);
+    color: #a67c3d;
+  }
+
+  body.light-theme .pill:hover {
+    border-color: rgba(212, 168, 83, 0.55);
+    box-shadow: 0 4px 12px rgba(212, 168, 83, 0.15);
+  }
+
+  body.light-theme .pill.active {
+    background: linear-gradient(180deg, #f0cd80 0%, #d4a853 100%);
+    color: #14100a;
+    box-shadow: 0 4px 14px rgba(212, 168, 83, 0.35);
+  }
+
+  body.light-theme .stat-card {
+    background: #fff5f9;
+    border: 1px solid rgba(255, 105, 180, 0.28);
+    box-shadow: 0 6px 18px rgba(255, 105, 180, 0.08);
+  }
+
+  body.light-theme .stat-card:hover {
+    border-color: rgba(255, 79, 163, 0.50);
+    box-shadow: 0 10px 26px rgba(255, 105, 180, 0.14);
+  }
+
+  body.light-theme .stat-label { color: #5a6478; }
+  body.light-theme .stat-value { color: #4a2135; }
+  body.light-theme .stat-withdrawn { color: #d63384; }
+  body.light-theme .stat-balance { color: #16a34a; }
+
+  body.light-theme .stat-card-balance {
+    border-color: rgba(22, 163, 74, 0.40);
+    background: linear-gradient(160deg, #fff5f9 0%, #f2fcf5 100%);
+    box-shadow: 0 6px 22px rgba(22, 163, 74, 0.10);
+  }
+
+  body.light-theme .entry-notes { color: #5a6478; }
+  body.light-theme .entry-amount-withdrawal { color: #d63384; }
+
+  body.light-theme .analytics-card {
+    background: #fff5f9;
+    border: 1px solid rgba(255, 105, 180, 0.28);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.08);
+  }
+
+  body.light-theme .analytics-card:hover {
+    border-color: rgba(255, 79, 163, 0.50);
+    box-shadow: 0 10px 28px rgba(255, 105, 180, 0.15);
+  }
+
+  body.light-theme .fin-card {
+    background: #fffafd;
+    border: 1px solid rgba(255, 105, 180, 0.25);
+  }
+
+  body.light-theme .fin-card:hover { border-color: rgba(255, 79, 163, 0.45); }
+  body.light-theme .fin-label { color: #5a6478; }
+  body.light-theme .fin-value { color: #4a2135; }
+
+  body.light-theme .chart-box {
+    background: #fffafd;
+    border: 1px solid rgba(255, 105, 180, 0.25);
+  }
+
+  body.light-theme .chart-title { color: #a67c3d; }
+
+  body.light-theme textarea {
+    background: #fffafd;
+    border: 1px solid rgba(255, 105, 180, 0.35);
+    color: #4a2135;
+  }
+
+  body.light-theme textarea:focus {
+    background: #ffffff;
+    border-color: #ff4fa3;
+    box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.15);
+  }
+
+  body.light-theme input[type="date"] { color-scheme: light; }
+  body.light-theme input[type="date"]::-webkit-calendar-picker-indicator { filter: none; opacity: 0.7; }
+
+  /* =========================================
+     GIRLY POP PINK THEME
+     ========================================= */
+
+  body.girly-theme {
+    background: #fff0f7;
+    color: #4a2135;
+  }
+
+  body.girly-theme .summary {
+    background: linear-gradient(155deg, #ffffff 0%, #ffe9f3 50%, #ffd0e5 100%);
+    border: 1px solid rgba(255, 20, 147, 0.45);
+    box-shadow: 0 18px 50px rgba(255, 105, 180, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.girly-theme .summary:hover {
+      box-shadow: 0 28px 80px rgba(255, 105, 180, 0.30), 0 0 0 1px rgba(255, 20, 147, 0.15) inset;
+      transform: translateY(-2px);
+      border-color: rgba(255, 20, 147, 0.60);
+    }
+  }
+
+  body.girly-theme .ring { border: 2px solid rgba(255, 20, 147, 0.20); }
+  body.girly-theme .ring::before { background: #ff1493; box-shadow: 0 0 12px #ff1493; }
+
+  body.girly-theme .badge {
+    background: rgba(255, 20, 147, 0.10);
+    border: 1px solid rgba(255, 20, 147, 0.40);
+    color: #d63384;
+  }
+
+  body.girly-theme .dot { background: #ff1493; box-shadow: 0 0 8px #ff1493; }
+
+  body.girly-theme .count,
+  body.girly-theme .label { color: #b05a82; }
+
+  body.girly-theme .amount,
+  body.girly-theme .digit {
+    background: linear-gradient(180deg, #7a1f4e 0%, #d63384 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  body.girly-theme .amount .currency {
+    background: linear-gradient(180deg, #ff1493 0%, #ff69b4 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  body.girly-theme .sub-row { border-top: 1px solid rgba(255, 20, 147, 0.20); }
+  body.girly-theme .sub-stat-val { color: #7a1f4e; }
+  body.girly-theme .sub-stat-key { color: #b05a82; }
+
+  body.girly-theme .add-card,
+  body.girly-theme .converter-card,
+  body.girly-theme .analytics-card {
+    background: #ffe9f3;
+    border: 1px solid rgba(255, 105, 180, 0.35);
+    box-shadow: 0 8px 24px rgba(255, 105, 180, 0.12);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.girly-theme .add-card:hover,
+    body.girly-theme .converter-card:hover,
+    body.girly-theme .analytics-card:hover {
+      border-color: rgba(255, 20, 147, 0.50);
+      box-shadow: 0 12px 32px rgba(255, 105, 180, 0.20);
+      transform: translateY(-1px);
+    }
+  }
+
+  body.girly-theme .add-title,
+  body.girly-theme .converter-title { color: #d63384; }
+
+  body.girly-theme .field label,
+  body.girly-theme .converter-field label,
+  body.girly-theme .currency-selector label,
+  body.girly-theme .converter-currency-row label { color: #a65b82; }
+
+  body.girly-theme input,
+  body.girly-theme textarea,
+  body.girly-theme select,
+  body.girly-theme .converter-card input,
+  body.girly-theme .converter-card select {
+    background: #fff5fa;
+    border: 1px solid rgba(255, 20, 147, 0.35);
+    color: #4a2135;
+  }
+
+  body.girly-theme input:focus,
+  body.girly-theme textarea:focus,
+  body.girly-theme select:focus {
+    background: #ffffff;
+    border-color: #ff1493;
+    box-shadow: 0 0 0 3px rgba(255, 20, 147, 0.15);
+  }
+
+  body.girly-theme button {
+    background: linear-gradient(180deg, #ff69b4 0%, #ff1493 100%);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(255, 20, 147, 0.30);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.girly-theme button:hover {
+      box-shadow: 0 10px 26px rgba(255, 20, 147, 0.40);
+    }
+  }
+
+  body.girly-theme .log-title { color: #b05a82; }
+
+  body.girly-theme .entry {
+    background: #fff0f7;
+    border: 1px solid rgba(255, 105, 180, 0.30);
+    box-shadow: 0 6px 18px rgba(255, 105, 180, 0.10);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.girly-theme .entry:hover {
+      background: #ffe9f3;
+      border-color: rgba(255, 20, 147, 0.45);
+      box-shadow: 0 8px 20px rgba(255, 105, 180, 0.16);
+    }
+  }
+
+  body.girly-theme .entry-source { color: #4a2135; }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.girly-theme .entry:hover .entry-source { color: #d63384; }
+  }
+
+  body.girly-theme .entry-date,
+  body.girly-theme .entry-notes { color: #b05a82; }
+
+  body.girly-theme .entry-amount { color: #d63384; }
+  body.girly-theme .entry-amount-withdrawal { color: #e91e8c; }
+
+  body.girly-theme .del-btn { color: #b05a82; }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.girly-theme .del-btn:hover {
+      color: #ff1493;
+      background: rgba(255, 20, 147, 0.10);
+    }
+  }
+
+  body.girly-theme .empty,
+  body.girly-theme .status { color: #b05a82; }
+
+  body.girly-theme .brand-name {
+    background: linear-gradient(135deg, #ff69b4 0%, #ff1493 50%, #ff69b4 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  body.girly-theme .brand-sub { color: #b05a82; }
+
+  body.girly-theme .brand-tag {
+    background: rgba(255, 20, 147, 0.10);
+    border: 1px solid rgba(255, 20, 147, 0.35);
+    color: #d63384;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.girly-theme .brand-tag:hover {
+      background: rgba(255, 20, 147, 0.16);
+      border-color: rgba(255, 20, 147, 0.55);
+    }
+  }
+
+  body.girly-theme .rate-label,
+  body.girly-theme .rate-info { color: #b05a82; }
+  body.girly-theme .rate-value { color: #4a2135; }
+  body.girly-theme .rate-arrow { color: #d63384; }
+  body.girly-theme .rate-info { border-top: 1px solid rgba(255, 20, 147, 0.20); }
+
+  body.girly-theme .theme-toggle {
+    background: rgba(255, 20, 147, 0.12);
+    border: 1px solid rgba(255, 20, 147, 0.40);
+    box-shadow: 0 4px 12px rgba(255, 105, 180, 0.20);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.girly-theme .theme-toggle:hover {
+      background: rgba(255, 20, 147, 0.20);
+      border-color: rgba(255, 20, 147, 0.60);
+    }
+  }
+
+  body.girly-theme .particle { background: #ff69b4; }
+
+  body.girly-theme input[type="date"] { color-scheme: light; }
+  body.girly-theme input[type="date"]::-webkit-calendar-picker-indicator { filter: none; opacity: 0.7; }
+
+  /* Girly — new components */
+  body.girly-theme .filter-label { color: #b05a82; }
+
+  body.girly-theme .pill {
+    background: rgba(255, 20, 147, 0.10);
+    border: 1px solid rgba(255, 20, 147, 0.35);
+    color: #d63384;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.girly-theme .pill:hover {
+      border-color: rgba(255, 20, 147, 0.60);
+      box-shadow: 0 4px 12px rgba(255, 20, 147, 0.15);
+    }
+  }
+
+  body.girly-theme .pill.active {
+    background: linear-gradient(180deg, #ff69b4 0%, #ff1493 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(255, 20, 147, 0.35);
+  }
+
+  body.girly-theme .stat-card {
+    background: #ffe9f3;
+    border: 1px solid rgba(255, 20, 147, 0.30);
+    box-shadow: 0 6px 18px rgba(255, 105, 180, 0.10);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.girly-theme .stat-card:hover {
+      border-color: rgba(255, 20, 147, 0.55);
+      box-shadow: 0 10px 26px rgba(255, 105, 180, 0.18);
+    }
+  }
+
+  body.girly-theme .stat-label { color: #a65b82; }
+  body.girly-theme .stat-value { color: #7a1f4e; }
+  body.girly-theme .stat-withdrawn { color: #d63384; }
+  body.girly-theme .stat-balance { color: #16a34a; }
+
+  body.girly-theme .stat-card-balance {
+    border-color: rgba(22, 163, 74, 0.40);
+    background: linear-gradient(160deg, #ffe9f3 0%, #eefaf2 100%);
+    box-shadow: 0 6px 22px rgba(22, 163, 74, 0.12);
+  }
+
+  body.girly-theme .fin-card {
+    background: #fff5fa;
+    border: 1px solid rgba(255, 105, 180, 0.28);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body.girly-theme .fin-card:hover { border-color: rgba(255, 20, 147, 0.50); }
+  }
+
+  body.girly-theme .fin-label { color: #a65b82; }
+  body.girly-theme .fin-value { color: #7a1f4e; }
+
+  body.girly-theme .chart-box {
+    background: #fff5fa;
+    border: 1px solid rgba(255, 105, 180, 0.28);
+  }
+
+  body.girly-theme .chart-title { color: #d63384; }
+
+  /* Light theme — error screen & recovery banner */
+  body.light-theme .error-screen { background: rgba(255, 247, 251, 0.88); }
+
+  body.light-theme .error-card {
+    background: linear-gradient(155deg, #ffffff 0%, #fffbf5 55%, #ffffff 100%);
+    border: 1px solid rgba(212, 168, 83, 0.35);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  }
+
+  body.light-theme .error-title { color: #4a2135; }
+  body.light-theme .error-text { color: #5a6478; }
+
+  body.light-theme .error-btns .error-btn-ghost,
+  body.light-theme .recovery-btns .recovery-btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(212, 168, 83, 0.50);
+    color: #a67c3d;
+    box-shadow: none;
+  }
+
+  body.light-theme .error-btns .error-btn-ghost:hover,
+  body.light-theme .recovery-btns .recovery-btn-ghost:hover {
+    background: rgba(212, 168, 83, 0.12);
+    box-shadow: none;
+  }
+
+  body.light-theme .recovery-banner {
+    background: #fff5f9;
+    border: 1px solid rgba(212, 168, 83, 0.35);
+    box-shadow: 0 12px 36px rgba(255, 105, 180, 0.15);
+  }
+
+  body.light-theme .recovery-text { color: #4a2135; }
+
+  /* Girly — error screen & recovery banner */
+  body.girly-theme .error-screen { background: rgba(255, 240, 247, 0.88); }
+
+  body.girly-theme .error-card {
+    background: linear-gradient(155deg, #ffffff 0%, #ffe9f3 50%, #ffd0e5 100%);
+    border: 1px solid rgba(255, 20, 147, 0.45);
+    box-shadow: 0 20px 60px rgba(255, 105, 180, 0.28);
+  }
+
+  body.girly-theme .error-title { color: #7a1f4e; }
+  body.girly-theme .error-text { color: #b05a82; }
+
+  body.girly-theme .error-btns .error-btn-ghost,
+  body.girly-theme .recovery-btns .recovery-btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255, 20, 147, 0.50);
+    color: #d63384;
+    box-shadow: none;
+  }
+
+  body.girly-theme .error-btns .error-btn-ghost:hover,
+  body.girly-theme .recovery-btns .recovery-btn-ghost:hover {
+    background: rgba(255, 20, 147, 0.10);
+    box-shadow: none;
+  }
+
+  body.girly-theme .recovery-banner {
+    background: #ffe9f3;
+    border: 1px solid rgba(255, 20, 147, 0.35);
+    box-shadow: 0 12px 36px rgba(255, 105, 180, 0.22);
+  }
+
+  body.girly-theme .recovery-text { color: #7a1f4e; }
+</style>
+</head>
+<body>
+  <!-- Background Particles -->
+  <div class="particles">
+    <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 20%; animation-delay: 1.5s;"></div>
+    <div class="particle" style="left: 30%; animation-delay: 3s;"></div>
+    <div class="particle" style="left: 40%; animation-delay: 4.5s;"></div>
+    <div class="particle" style="left: 50%; animation-delay: 0.8s;"></div>
+    <div class="particle" style="left: 60%; animation-delay: 2.3s;"></div>
+    <div class="particle" style="left: 70%; animation-delay: 3.8s;"></div>
+    <div class="particle" style="left: 80%; animation-delay: 5.3s;"></div>
+    <div class="particle" style="left: 90%; animation-delay: 1.2s;"></div>
+    <div class="particle" style="left: 15%; animation-delay: 2.7s;"></div>
+  </div>
+
+  <div class="wrap">
+    <div class="brand-header">
+      <div class="brand-left">
+        <div class="brand-name">Your Lovely</div>
+        <div class="brand-sub">Earnings Tracker</div>
+      </div>
+      <div class="brand-tag">WORK HARD ❤️</div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <div class="filter-label">Show:</div>
+      <div class="filter-pills" id="filterPills">
+        <button class="pill active" data-filter="all" type="button">All time</button>
+        <button class="pill" data-filter="year" type="button">This year</button>
+        <button class="pill" data-filter="month" type="button">This month</button>
+        <button class="pill" data-filter="30d" type="button">Last 30 days</button>
+        <button class="pill" data-filter="custom" type="button">Custom</button>
+      </div>
+      <div class="custom-range" id="customRange" hidden>
+        <div class="field">
+          <label>From</label>
+          <input type="date" id="customFromInput" />
+        </div>
+        <div class="field">
+          <label>To</label>
+          <input type="date" id="customToInput" />
+        </div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <!-- Rotating Ring -->
+      <div class="ring"></div>
+
+      <div class="top-row">
+        <div class="badge"><span class="dot"></span>Working</div>
+        <div class="count" id="entryCount"></div>
+      </div>
+      <div class="label" id="summaryLabel">Total earned from Claude coding</div>
+      <div class="amount" id="totalDisplay"><span class="currency">₹</span>0<span class="currency" style="font-size:0.4em;">.00</span></div>
+      <div class="sub-row">
+        <div class="sub-stat">
+          <div class="sub-stat-val" id="lastAmount">—</div>
+          <div class="sub-stat-key">Last Payment</div>
+        </div>
+        <div class="sub-stat">
+          <div class="sub-stat-val" id="avgAmount">—</div>
+          <div class="sub-stat-key">Avg Payment</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard stat cards -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">💸 Total Earnings</div>
+        <div class="stat-value" id="statEarnings">₹0.00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">🏦 Total Withdrawn</div>
+        <div class="stat-value stat-withdrawn" id="statWithdrawn">₹0.00</div>
+      </div>
+      <div class="stat-card stat-card-balance">
+        <div class="stat-label">💎 Available Balance</div>
+        <div class="stat-value stat-balance" id="statBalance">₹0.00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">📥 Total Payments</div>
+        <div class="stat-value" id="statPayments">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">📤 Total Withdrawals</div>
+        <div class="stat-value stat-withdrawn" id="statWithdrawals">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">📊 Average Payment</div>
+        <div class="stat-value" id="statAvgPayment">₹0.00</div>
+      </div>
+    </div>
+
+    <!-- Earnings & Withdrawal forms -->
+    <div class="duo-grid">
+    <div class="add-card">
+      <div class="add-title">Log a payment</div>
+      <div class="currency-selector">
+        <label>Currency:</label>
+        <select id="currencySelect">
+          <option value="INR" selected>🇮🇳 Indian Rupee (₹)</option>
+          <option value="USD">🇺🇸 US Dollar ($)</option>
+          <option value="EUR">🇪🇺 Euro (€)</option>
+          <option value="GBP">🇬🇧 British Pound (£)</option>
+          <option value="JPY">🇯🇵 Japanese Yen (¥)</option>
+          <option value="AUD">🇦🇺 Australian Dollar (A$)</option>
+          <option value="CAD">🇨🇦 Canadian Dollar (C$)</option>
+          <option value="CNY">🇨🇳 Chinese Yuan (¥)</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Amount (<span id="currencyLabel">₹</span>)</label>
+          <input id="amountInput" type="number" step="0.01" placeholder="12500.00" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label>Source</label>
+          <input id="sourceInput" type="text" placeholder="Client / project" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Date</label>
+          <input id="dateInput" type="date" />
+        </div>
+      </div>
+      <button id="addBtn">Add Entry</button>
+      <div class="status" id="statusMsg"></div>
+    </div>
+
+    <div class="add-card">
+      <div class="add-title">💸 Withdraw cash</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Amount (<span id="withdrawalCurrencyLabel">₹</span>)</label>
+          <input id="withdrawalAmountInput" type="number" step="0.01" placeholder="500.00" inputmode="decimal" />
+        </div>
+        <div class="field">
+          <label>Source / reason</label>
+          <input id="withdrawalSourceInput" type="text" placeholder="Bank transfer, bills..." />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Date</label>
+          <input id="withdrawalDateInput" type="date" />
+        </div>
+        <div class="field">
+          <label>Notes (optional)</label>
+          <input id="withdrawalNotesInput" type="text" placeholder="Extra details" />
+        </div>
+      </div>
+      <button id="withdrawalBtn">Withdraw</button>
+      <div class="status" id="withdrawalStatus"></div>
+    </div>
+    </div><!-- /duo-grid -->
+
+    <!-- Histories -->
+    <div class="duo-grid">
+      <div>
+        <div class="log-title">Payment History</div>
+        <div id="logList"></div>
+      </div>
+      <div>
+        <div class="log-title">Withdrawal History</div>
+        <div id="withdrawalList"></div>
+      </div>
+    </div>
+
+    <!-- Analytics Dashboard -->
+    <div class="analytics-card">
+      <div class="add-title">📈 Analytics Dashboard</div>
+
+      <div class="fin-grid">
+        <div class="fin-card">
+          <div class="fin-label">Highest Payment</div>
+          <div class="fin-value" id="finHighestPayment">—</div>
+        </div>
+        <div class="fin-card">
+          <div class="fin-label">Highest Withdrawal</div>
+          <div class="fin-value" id="finHighestWithdrawal">—</div>
+        </div>
+        <div class="fin-card">
+          <div class="fin-label">Average Payment</div>
+          <div class="fin-value" id="finAvgPayment">—</div>
+        </div>
+        <div class="fin-card">
+          <div class="fin-label">Average Withdrawal</div>
+          <div class="fin-value" id="finAvgWithdrawal">—</div>
+        </div>
+        <div class="fin-card">
+          <div class="fin-label">Most Active Month</div>
+          <div class="fin-value" id="finActiveMonth">—</div>
+        </div>
+        <div class="fin-card">
+          <div class="fin-label">Total Transactions</div>
+          <div class="fin-value" id="finTransactions">0</div>
+        </div>
+      </div>
+
+      <div class="empty chart-empty" id="chartEmpty" hidden>📊 Add payments or withdrawals to see charts</div>
+
+      <div class="chart-grid">
+        <div class="chart-box">
+          <div class="chart-title">Earnings vs Withdrawals</div>
+          <div class="chart-wrap"><canvas id="vsChart"></canvas></div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Balance Trend</div>
+          <div class="chart-wrap"><canvas id="balanceChart"></canvas></div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Monthly Earnings</div>
+          <div class="chart-wrap"><canvas id="monthlyEarningsChart"></canvas></div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Monthly Withdrawals</div>
+          <div class="chart-wrap"><canvas id="monthlyWithdrawalsChart"></canvas></div>
+        </div>
+        <div class="chart-box chart-box-wide">
+          <div class="chart-title">Payment Sources</div>
+          <div class="chart-wrap"><canvas id="sourceChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="converter-card">
+      <div class="converter-title">
+        💱 Live Currency Converter
+      </div>
+      <div class="converter-currency-selectors">
+        <div class="converter-currency-row">
+          <label>From:</label>
+          <select id="converterFromCurrency">
+            <option value="USD" selected>🇺🇸 US Dollar ($)</option>
+            <option value="INR">🇮🇳 Indian Rupee (₹)</option>
+            <option value="EUR">🇪🇺 Euro (€)</option>
+            <option value="GBP">🇬🇧 British Pound (£)</option>
+            <option value="JPY">🇯🇵 Japanese Yen (¥)</option>
+            <option value="AUD">🇦🇺 Australian Dollar (A$)</option>
+            <option value="CAD">🇨🇦 Canadian Dollar (C$)</option>
+            <option value="CNY">🇨🇳 Chinese Yuan (¥)</option>
+          </select>
+        </div>
+        <div class="converter-currency-row">
+          <label>To:</label>
+          <select id="converterToCurrency">
+            <option value="INR" selected>🇮🇳 Indian Rupee (₹)</option>
+            <option value="USD">🇺🇸 US Dollar ($)</option>
+            <option value="EUR">🇪🇺 Euro (€)</option>
+            <option value="GBP">🇬🇧 British Pound (£)</option>
+            <option value="JPY">🇯🇵 Japanese Yen (¥)</option>
+            <option value="AUD">🇦🇺 Australian Dollar (A$)</option>
+            <option value="CAD">🇨🇦 Canadian Dollar (C$)</option>
+            <option value="CNY">🇨🇳 Chinese Yuan (¥)</option>
+          </select>
+        </div>
+      </div>
+      <div class="rate-display">
+        <div class="rate-pair">
+          <div class="rate-label" id="fromCurrencyLabel">USD</div>
+          <div class="rate-value" id="fromCurrencyValue">$1.00</div>
+        </div>
+        <div class="rate-arrow">→</div>
+        <div class="rate-pair">
+          <div class="rate-label" id="toCurrencyLabel">INR</div>
+          <div class="rate-value" id="exchangeRate">₹—</div>
+        </div>
+      </div>
+      <div class="converter-inputs">
+        <div class="converter-field">
+          <label id="fromInputLabel">USD Amount</label>
+          <input id="fromInput" type="number" step="0.01" placeholder="100" inputmode="decimal" />
+        </div>
+        <div class="rate-arrow" style="margin-bottom: 8px;">→</div>
+        <div class="converter-field">
+          <label id="toInputLabel">INR Amount</label>
+          <input id="toInput" type="number" step="0.01" placeholder="0.00" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="rate-info">
+        <div class="rate-status">
+          <span class="rate-dot loading" id="rateDot"></span>
+          <span id="rateStatus">Fetching rate...</span>
+        </div>
+        <div id="rateUpdate">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme Toggle Button -->
+  <div class="theme-toggle" id="themeToggle" title="Toggle theme">
+    <span class="theme-icon">🌙</span>
+  </div>
+
+  <!-- Data recovery banner (appears only when saved data is corrupted) -->
+  <div class="recovery-banner" id="recoveryBanner" hidden>
+    <div class="recovery-text">⚠️ Some saved data could not be read and may be corrupted.</div>
+    <div class="recovery-btns">
+      <button class="recovery-btn" id="recoveryResetBtn" type="button">Reset corrupted data</button>
+      <button class="recovery-btn recovery-btn-ghost" id="recoveryIgnoreBtn" type="button">Ignore for now</button>
+    </div>
+  </div>
+
+  <!-- Custom error screen (appears only on genuine critical errors) -->
+  <div class="error-screen" id="errorScreen" hidden>
+    <div class="error-card">
+      <div class="error-icon">⚠️</div>
+      <div class="error-title">Something went wrong</div>
+      <div class="error-text">An unexpected error occurred while running the application.</div>
+      <div class="error-btns">
+        <button id="errorRetryBtn" type="button">Try Again</button>
+        <button class="error-btn-ghost" id="errorHomeBtn" type="button">Go Home</button>
+      </div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  /* ==========================================================
+     EARNINGS & WITHDRAWALS TRACKER — PERSONAL FINANCE DASHBOARD
+     Sections: storage/state, element refs, storage helpers,
+     legacy migration, theme (dark/light/girly), currency,
+     filters, rendering, financial summary, charts (Chart.js),
+     add/delete flows, live currency converter, intro animations.
+     ========================================================== */
+
+  // ---------- Error handling & recovery ----------
+  const errorScreen = document.getElementById('errorScreen');
+  const errorRetryBtn = document.getElementById('errorRetryBtn');
+  const errorHomeBtn = document.getElementById('errorHomeBtn');
+  const recoveryBanner = document.getElementById('recoveryBanner');
+  const recoveryResetBtn = document.getElementById('recoveryResetBtn');
+  const recoveryIgnoreBtn = document.getElementById('recoveryIgnoreBtn');
+  const RECOVERY_IGNORED_KEY = 'earnings_tracker_recovery_ignored';
+
+  const corruptedKeys = [];
+
+  // Log detailed error info to the console only — never to the UI.
+  function logError(context, err) {
+    console.error('[Earnings Tracker] ' + context, err);
+  }
+
+  // External/network failures are recoverable, not app crashes.
+  function isBenignError(reason) {
+    if (!reason) return false;
+    const msg = String((reason && reason.message) || reason || '').toLowerCase();
+    return /failed to fetch|load failed|networkerror|network error|abort|net::err_|timeout|chart library unavailable/.test(msg);
+  }
+
+  function showErrorScreen() {
+    try {
+      errorScreen.hidden = false;
+      document.body.classList.add('error-mode');
+    } catch (e) {
+      console.error('[Earnings Tracker] Could not show error screen', e);
+    }
+  }
+
+  function hideErrorScreen() {
+    errorScreen.hidden = true;
+    document.body.classList.remove('error-mode');
+  }
+
+  // "Try Again" — hard, safe restart.
+  errorRetryBtn.addEventListener('click', () => {
+    errorRetryBtn.disabled = true;
+    errorRetryBtn.textContent = 'Restarting…';
+    try { sessionStorage.removeItem(RECOVERY_IGNORED_KEY); } catch (e) { /* ignore */ }
+    location.reload();
+  });
+
+  // "Go Home" — soft restart: reset the view to the default home state.
+  errorHomeBtn.addEventListener('click', () => {
+    try {
+      hideErrorScreen();
+      setFilter('all');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e) {
+      logError('Soft restart failed, hard reloading', e);
+      location.reload();
+    }
+  });
+
+  // Global JS error handler.
+  window.addEventListener('error', (event) => {
+    // Resource load failures (e.g. offline CDN) are not app crashes.
+    if (!event.error && event.target && event.target.tagName &&
+        /^(SCRIPT|IMG|LINK|IFRAME)$/.test(event.target.tagName)) {
+      logError('Resource failed to load: ' + (event.target.src || event.target.href || event.target.tagName), event);
+      return;
+    }
+    logError('Uncaught error', event.error || event.message);
+    showErrorScreen();
+  });
+
+  // Unhandled promise rejections.
+  window.addEventListener('unhandledrejection', (event) => {
+    const reason = (event && event.reason) ? event.reason : (event || 'unknown');
+    if (isBenignError(reason)) {
+      logError('Ignored non-critical rejection', reason);
+      return;
+    }
+    logError('Unhandled promise rejection', reason);
+    showErrorScreen();
+  });
+
+  // Corrupted-data recovery flow (user-confirmed reset only).
+  function showRecoveryBanner() {
+    try {
+      if (sessionStorage.getItem(RECOVERY_IGNORED_KEY) === '1') return;
+    } catch (e) { /* ignore */ }
+    recoveryBanner.hidden = false;
+  }
+
+  function hideRecoveryBanner() {
+    recoveryBanner.hidden = true;
+  }
+
+  recoveryResetBtn.addEventListener('click', () => {
+    if (!confirm('Reset the corrupted saved data? This permanently deletes the unreadable entries.')) return;
+    const toClear = [...new Set(corruptedKeys)];
+    toClear.forEach(key => {
+      try {
+        if (window.storage) {
+          // Artifact sandbox may not expose removal — overwrite with an empty array instead.
+          window.storage.set(key, JSON.stringify([]), false);
+        } else {
+          localStorage.removeItem(key);
+        }
+      } catch (e) {
+        logError('Could not clear corrupted key: ' + key, e);
+      }
+    });
+    corruptedKeys.length = 0;
+    hideRecoveryBanner();
+    // Reload data cleanly and rebuild the UI.
+    (async () => {
+      payments = await loadPayments();
+      withdrawals = await loadWithdrawals();
+      refreshAll();
+    })();
+  });
+
+  recoveryIgnoreBtn.addEventListener('click', () => {
+    hideRecoveryBanner();
+    try { sessionStorage.setItem(RECOVERY_IGNORED_KEY, '1'); } catch (e) { /* ignore */ }
+  });
+
+  // ---------- Storage keys & state ----------
+  const PAYMENTS_KEY = 'payments';
+  const WITHDRAWALS_KEY = 'withdrawals';
+  const LEGACY_KEY = 'claude_coding_earnings_log';
+  const THEME_KEY = 'earnings_tracker_theme';
+  const CURRENCY_KEY = 'earnings_tracker_currency';
+  const FILTER_KEY = 'earnings_tracker_filter';
+  const CUSTOM_FROM_KEY = 'earnings_tracker_custom_from';
+  const CUSTOM_TO_KEY = 'earnings_tracker_custom_to';
+
+  let payments = [];
+  let withdrawals = [];
+  let activeFilter = 'all';
+  let customFrom = '';
+  let customTo = '';
+  let newEntryId = null;
+  let newWithdrawalId = null;
+  let selectedCurrency = 'INR';
+  let currentTotal = 0;
+
+  const currencySymbols = {
+    'INR': '₹',
+    'USD': '$',
+    'EUR': '€',
+    'GBP': '£',
+    'JPY': '¥',
+    'AUD': 'A$',
+    'CAD': 'C$',
+    'CNY': '¥'
+  };
+
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  // ---------- Element references ----------
+  const totalDisplay = document.getElementById('totalDisplay');
+  const entryCount = document.getElementById('entryCount');
+  const lastAmount = document.getElementById('lastAmount');
+  const avgAmount = document.getElementById('avgAmount');
+  const summaryLabel = document.getElementById('summaryLabel');
+  const logList = document.getElementById('logList');
+  const withdrawalList = document.getElementById('withdrawalList');
+  const amountInput = document.getElementById('amountInput');
+  const sourceInput = document.getElementById('sourceInput');
+  const dateInput = document.getElementById('dateInput');
+  const addBtn = document.getElementById('addBtn');
+  const statusMsg = document.getElementById('statusMsg');
+  const withdrawalAmountInput = document.getElementById('withdrawalAmountInput');
+  const withdrawalSourceInput = document.getElementById('withdrawalSourceInput');
+  const withdrawalDateInput = document.getElementById('withdrawalDateInput');
+  const withdrawalNotesInput = document.getElementById('withdrawalNotesInput');
+  const withdrawalCurrencyLabel = document.getElementById('withdrawalCurrencyLabel');
+  const withdrawalBtn = document.getElementById('withdrawalBtn');
+  const withdrawalStatus = document.getElementById('withdrawalStatus');
+  const statEarnings = document.getElementById('statEarnings');
+  const statWithdrawn = document.getElementById('statWithdrawn');
+  const statBalance = document.getElementById('statBalance');
+  const statPayments = document.getElementById('statPayments');
+  const statWithdrawals = document.getElementById('statWithdrawals');
+  const statAvgPayment = document.getElementById('statAvgPayment');
+  const finHighestPayment = document.getElementById('finHighestPayment');
+  const finHighestWithdrawal = document.getElementById('finHighestWithdrawal');
+  const finAvgPayment = document.getElementById('finAvgPayment');
+  const finAvgWithdrawal = document.getElementById('finAvgWithdrawal');
+  const finActiveMonth = document.getElementById('finActiveMonth');
+  const finTransactions = document.getElementById('finTransactions');
+  const chartEmpty = document.getElementById('chartEmpty');
+  const filterPills = document.getElementById('filterPills');
+  const customRange = document.getElementById('customRange');
+  const customFromInput = document.getElementById('customFromInput');
+  const customToInput = document.getElementById('customToInput');
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon = themeToggle.querySelector('.theme-icon');
+  const currencySelect = document.getElementById('currencySelect');
+  const currencyLabel = document.getElementById('currencyLabel');
+
+  dateInput.value = todayStr;
+  withdrawalDateInput.value = todayStr;
+
+  // ---------- Storage helpers (artifact sandbox + localStorage) ----------
+  async function storageGet(key) {
+    try {
+      if (window.storage) {
+        const result = await window.storage.get(key, false);
+        return result ? result.value : null;
+      }
+      return localStorage.getItem(key);
+    } catch (e) {
+      console.error('Storage get error:', e);
+      return null;
+    }
+  }
+
+  async function storageSet(key, value) {
+    try {
+      if (window.storage) {
+        await window.storage.set(key, value, false);
+      } else {
+        localStorage.setItem(key, value);
+      }
+      return true;
+    } catch (e) {
+      console.error('Storage set error:', e);
+      return false;
+    }
+  }
+
+  // ---------- Legacy data migration (never lose existing payments) ----------
+  async function migrateLegacyData() {
+    try {
+      const raw = await storageGet(PAYMENTS_KEY);
+      if (raw) {
+        try {
+          if (JSON.parse(raw).length > 0) return;
+        } catch (e) {
+          // Payments data is corrupted — the recovery flow will handle it.
+          if (!corruptedKeys.includes(PAYMENTS_KEY)) corruptedKeys.push(PAYMENTS_KEY);
+          return;
+        }
+      }
+      const legacy = await storageGet(LEGACY_KEY);
+      if (!legacy) return;
+      let arr;
+      try {
+        arr = JSON.parse(legacy);
+      } catch (e) {
+        logError('Corrupted legacy data', e);
+        if (!corruptedKeys.includes(LEGACY_KEY)) corruptedKeys.push(LEGACY_KEY);
+        return;
+      }
+      if (!Array.isArray(arr) || arr.length === 0) return;
+      await storageSet(PAYMENTS_KEY, JSON.stringify(arr));
+      try {
+        if (!window.storage) localStorage.removeItem(LEGACY_KEY);
+      } catch (e) { /* keep going */ }
+      console.log('Migrated', arr.length, 'legacy payment(s) into', PAYMENTS_KEY);
+    } catch (e) {
+      console.error('Migration error:', e);
+    }
+  }
+
+  async function loadPayments() {
+    const raw = await storageGet(PAYMENTS_KEY);
+    if (raw === null || raw === '') return [];
+    try { return JSON.parse(raw); }
+    catch (e) {
+      logError('Corrupted payments data', e);
+      if (!corruptedKeys.includes(PAYMENTS_KEY)) corruptedKeys.push(PAYMENTS_KEY);
+      return [];
+    }
+  }
+
+  async function loadWithdrawals() {
+    const raw = await storageGet(WITHDRAWALS_KEY);
+    if (raw === null || raw === '') return [];
+    try { return JSON.parse(raw); }
+    catch (e) {
+      logError('Corrupted withdrawals data', e);
+      if (!corruptedKeys.includes(WITHDRAWALS_KEY)) corruptedKeys.push(WITHDRAWALS_KEY);
+      return [];
+    }
+  }
+
+  async function savePayments() {
+    const ok = await storageSet(PAYMENTS_KEY, JSON.stringify(payments));
+    if (ok) {
+      statusMsg.textContent = 'Saved';
+      setTimeout(() => { if (statusMsg.textContent === 'Saved') statusMsg.textContent = ''; }, 1200);
+    } else {
+      statusMsg.textContent = 'Could not save, try again';
+    }
+    return ok;
+  }
+
+  async function saveWithdrawals() {
+    const ok = await storageSet(WITHDRAWALS_KEY, JSON.stringify(withdrawals));
+    if (ok) {
+      withdrawalStatus.textContent = 'Saved';
+      setTimeout(() => { if (withdrawalStatus.textContent === 'Saved') withdrawalStatus.textContent = ''; }, 1200);
+    } else {
+      withdrawalStatus.textContent = 'Could not save, try again';
+    }
+    return ok;
+  }
+
+  // ---------- Theme Management (dark / light / girly pop pink) ----------
+  const THEMES = ['dark', 'light', 'girly'];
+  const THEME_ICONS = { dark: '🌙', light: '☀️', girly: '💖' };
+
+  function applyTheme(theme) {
+    document.body.classList.remove('light-theme', 'girly-theme');
+    if (theme === 'light') document.body.classList.add('light-theme');
+    if (theme === 'girly') document.body.classList.add('girly-theme');
+    themeIcon.textContent = THEME_ICONS[theme];
+    try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* ignore */ }
+    safeRun('renderCharts', renderCharts); // re-theme charts for the active theme
+  }
+
+  function initTheme() {
+    let saved = 'dark';
+    try { saved = localStorage.getItem(THEME_KEY) || 'dark'; } catch (e) { /* ignore */ }
+    if (!THEMES.includes(saved)) saved = 'dark';
+    applyTheme(saved);
+  }
+
+  themeToggle.addEventListener('click', () => {
+    const current = document.body.classList.contains('girly-theme') ? 'girly'
+      : document.body.classList.contains('light-theme') ? 'light' : 'dark';
+    applyTheme(THEMES[(THEMES.indexOf(current) + 1) % THEMES.length]);
+  });
+
+  // ---------- Currency Management ----------
+  function initCurrency() {
+    try {
+      const savedCurrency = localStorage.getItem(CURRENCY_KEY) || 'INR';
+      selectedCurrency = savedCurrency;
+      currencySelect.value = savedCurrency;
+      updateCurrencyDisplay();
+    } catch (e) {
+      console.error('Currency init error:', e);
+    }
+  }
+
+  function updateCurrencyDisplay() {
+    const symbol = currencySymbols[selectedCurrency];
+    currencyLabel.textContent = symbol;
+    withdrawalCurrencyLabel.textContent = symbol;
+
+    // Update main display currency symbol
+    const currencySpans = totalDisplay.querySelectorAll('.currency');
+    if (currencySpans.length > 0) {
+      currencySpans[0].textContent = symbol;
+    }
+
+    // Update placeholders
+    if (selectedCurrency === 'INR') {
+      amountInput.placeholder = '12500.00';
+    } else if (selectedCurrency === 'USD') {
+      amountInput.placeholder = '150.00';
+    } else if (selectedCurrency === 'EUR' || selectedCurrency === 'GBP') {
+      amountInput.placeholder = '120.00';
+    } else if (selectedCurrency === 'JPY' || selectedCurrency === 'CNY') {
+      amountInput.placeholder = '15000.00';
+    } else {
+      amountInput.placeholder = '200.00';
+    }
+  }
+
+  currencySelect.addEventListener('change', () => {
+    selectedCurrency = currencySelect.value;
+    updateCurrencyDisplay();
+    try { localStorage.setItem(CURRENCY_KEY, selectedCurrency); } catch (e) { /* ignore */ }
+    refreshAll();
+  });
+
+  // ---------- Filters ----------
+  function toISO(d) {
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+  }
+
+  function getDateBounds() {
+    const now = new Date();
+    let from = null, to = null;
+    switch (activeFilter) {
+      case 'year':
+        from = new Date(now.getFullYear(), 0, 1);
+        break;
+      case 'month':
+        from = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+      case '30d': {
+        from = new Date(now);
+        from.setDate(from.getDate() - 29);
+        from.setHours(0, 0, 0, 0);
+        break;
+      }
+      case 'custom':
+        if (customFrom) from = new Date(customFrom + 'T00:00:00');
+        if (customTo) to = new Date(customTo + 'T23:59:59');
+        break;
+    }
+    return { from, to };
+  }
+
+  function inRange(dateStr, from, to) {
+    const t = new Date(dateStr + 'T00:00:00').getTime();
+    if (from && t < from.getTime()) return false;
+    if (to && t > to.getTime()) return false;
+    return true;
+  }
+
+  function getFilteredPayments() {
+    const { from, to } = getDateBounds();
+    return payments.filter(p => inRange(p.date, from, to));
+  }
+
+  function getFilteredWithdrawals() {
+    const { from, to } = getDateBounds();
+    return withdrawals.filter(w => inRange(w.date, from, to));
+  }
+
+  function filterLabel() {
+    switch (activeFilter) {
+      case 'year': return 'this year';
+      case 'month': return 'this month';
+      case '30d': return 'last 30 days';
+      case 'custom': return 'selected range';
+      default: return 'all time';
+    }
+  }
+
+  function applyFilterPills() {
+    document.querySelectorAll('.pill').forEach(p => {
+      p.classList.toggle('active', p.dataset.filter === activeFilter);
+    });
+    customRange.hidden = activeFilter !== 'custom';
+  }
+
+  function setFilter(f) {
+    activeFilter = f;
+    try { localStorage.setItem(FILTER_KEY, f); } catch (e) { /* ignore */ }
+    if (f === 'custom' && customFrom && customTo && customFrom > customTo) {
+      const tmp = customFrom; customFrom = customTo; customTo = tmp;
+      customFromInput.value = customFrom;
+      customToInput.value = customTo;
+    }
+    applyFilterPills();
+    refreshAll();
+  }
+
+  function initFilter() {
+    try { activeFilter = localStorage.getItem(FILTER_KEY) || 'all'; } catch (e) { /* ignore */ }
+    if (!['all', 'year', 'month', '30d', 'custom'].includes(activeFilter)) activeFilter = 'all';
+
+    try { customFrom = localStorage.getItem(CUSTOM_FROM_KEY) || ''; } catch (e) { /* ignore */ }
+    try { customTo = localStorage.getItem(CUSTOM_TO_KEY) || ''; } catch (e) { /* ignore */ }
+
+    if (!customFrom) {
+      const d = new Date();
+      d.setDate(d.getDate() - 29);
+      customFrom = toISO(d);
+    }
+    if (!customTo) customTo = todayStr;
+
+    customFromInput.value = customFrom;
+    customToInput.value = customTo;
+    applyFilterPills();
+  }
+
+  filterPills.addEventListener('click', (e) => {
+    const btn = e.target.closest('.pill');
+    if (btn) setFilter(btn.dataset.filter);
+  });
+
+  customFromInput.addEventListener('change', () => {
+    customFrom = customFromInput.value;
+    try { localStorage.setItem(CUSTOM_FROM_KEY, customFrom); } catch (err) { /* ignore */ }
+    if (activeFilter === 'custom') refreshAll();
+  });
+
+  customToInput.addEventListener('change', () => {
+    customTo = customToInput.value;
+    try { localStorage.setItem(CUSTOM_TO_KEY, customTo); } catch (err) { /* ignore */ }
+    if (activeFilter === 'custom') refreshAll();
+  });
+
+  function getCurrencySymbol(currency) {
+    return currencySymbols[currency] || currency;
+  }
+
+  // ---------- Money formatting ----------
+  function formatMoney(amount) {
+    const locale = selectedCurrency === 'INR' ? 'en-IN' : 'en-US';
+    try {
+      return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: selectedCurrency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amount);
+    } catch (e) {
+      return getCurrencySymbol(selectedCurrency) + Number(amount).toFixed(2);
+    }
+  }
+
+  function animateSlotMachine(targetValue) {
+    const targetStr = targetValue.toFixed(2);
+    const [whole, dec] = targetStr.split('.');
+    const symbol = getCurrencySymbol(selectedCurrency);
+    let html = `<span class="currency">${symbol}</span>`;
+
+    // Whole number digit columns
+    for (let i = 0; i < whole.length; i++) {
+      const targetDigit = parseInt(whole[i]);
+      html += `<span class="digit-wrapper">`;
+      html += `<span class="digit-column" data-target="${targetDigit}">`;
+      for (let roll = 0; roll < 3; roll++) {
+        for (let num = 0; num <= 9; num++) {
+          html += `<span class="digit">${num}</span>`;
+        }
+      }
+      html += `<span class="digit">${targetDigit}</span>`;
+      html += `</span></span>`;
+    }
+
+    html += '<span class="currency" style="font-size:0.4em;">.';
+
+    // Decimal digit columns
+    for (let i = 0; i < dec.length; i++) {
+      const targetDigit = parseInt(dec[i]);
+      html += `<span class="digit-wrapper">`;
+      html += `<span class="digit-column" data-target="${targetDigit}">`;
+      for (let roll = 0; roll < 3; roll++) {
+        for (let num = 0; num <= 9; num++) {
+          html += `<span class="digit">${num}</span>`;
+        }
+      }
+      html += `<span class="digit">${targetDigit}</span>`;
+      html += `</span></span>`;
+    }
+
+    html += '</span>';
+    totalDisplay.innerHTML = html;
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const columns = totalDisplay.querySelectorAll('.digit-column');
+        columns.forEach((col, index) => {
+          // 30 digits (0-9 x 3) then the target digit at position 30
+          const translateValue = -30;
+          setTimeout(() => {
+            col.style.transform = `translateY(${translateValue}em)`;
+          }, index * 80); // Stagger each digit
+        });
+      });
+    });
+  }
+
+  function celebrate() {
+    const summary = document.querySelector('.summary');
+    summary.classList.add('celebrating');
+    setTimeout(() => summary.classList.remove('celebrating'), 1500);
+  }
+
+  function formatDate(iso) {
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // ---------- Hero / totals ----------
+  function renderTotal(animate = false) {
+    const pays = getFilteredPayments();
+    const total = pays.reduce((sum, p) => sum + Number(p.amount), 0);
+    const symbol = getCurrencySymbol(selectedCurrency);
+
+    if (animate && total !== currentTotal) {
+      animateSlotMachine(total);
+      celebrate();
+    } else {
+      const [whole, dec] = total.toFixed(2).split('.');
+      const locale = selectedCurrency === 'INR' ? 'en-IN' : 'en-US';
+      const grouped = Number(whole).toLocaleString(locale);
+      totalDisplay.innerHTML = `<span class="currency">${symbol}</span>${grouped}<span class="currency" style="font-size:0.4em;">.${dec}</span>`;
+    }
+
+    currentTotal = total;
+    entryCount.textContent = pays.length + (pays.length === 1 ? ' payment' : ' payments');
+
+    if (pays.length > 0) {
+      const sorted = [...pays].sort((a, b) => new Date(b.date) - new Date(a.date));
+      lastAmount.textContent = symbol + Number(sorted[0].amount).toFixed(2);
+      avgAmount.textContent = symbol + (total / pays.length).toFixed(2);
+    } else {
+      lastAmount.textContent = '—';
+      avgAmount.textContent = '—';
+    }
+
+    summaryLabel.textContent = activeFilter === 'all'
+      ? 'Total earned from Claude coding'
+      : 'Total earned from Claude coding · ' + filterLabel();
+  }
+
+  // ---------- Dashboard stat cards ----------
+  function renderStats() {
+    const pays = getFilteredPayments();
+    const wdrs = getFilteredWithdrawals();
+    const totalEarnings = pays.reduce((s, p) => s + Number(p.amount), 0);
+    const totalWithdrawn = wdrs.reduce((s, w) => s + Number(w.amount), 0);
+
+    statEarnings.textContent = formatMoney(totalEarnings);
+    statWithdrawn.textContent = formatMoney(totalWithdrawn);
+    statBalance.textContent = formatMoney(totalEarnings - totalWithdrawn);
+    statPayments.textContent = pays.length;
+    statWithdrawals.textContent = wdrs.length;
+    statAvgPayment.textContent = pays.length ? formatMoney(totalEarnings / pays.length) : formatMoney(0);
+  }
+
+  // ---------- Payment history ----------
+  function renderPaymentLog() {
+    const pays = getFilteredPayments();
+    if (pays.length === 0) {
+      logList.innerHTML = `<div class="empty">${activeFilter === 'all' ? '💌 No payments logged yet' : '💌 No payments in this range'}</div>`;
+      return;
+    }
+    const sorted = [...pays].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const symbol = getCurrencySymbol(selectedCurrency);
+    logList.innerHTML = sorted.map(e => `
+      <div class="entry ${e.id === newEntryId ? 'new-entry' : ''}" data-id="${e.id}">
+        <div class="entry-left">
+          <div class="entry-source">${escapeHtml(e.source || 'Unspecified')}</div>
+          <div class="entry-date">${formatDate(e.date)}</div>
+        </div>
+        <div class="entry-right">
+          <div class="entry-amount">+${symbol}${Number(e.amount).toFixed(2)}</div>
+          <button class="del-btn" data-id="${e.id}">✕</button>
+        </div>
+      </div>
+    `).join('');
+
+    logList.querySelectorAll('.del-btn').forEach(btn => {
+      btn.addEventListener('click', () => deletePayment(btn.getAttribute('data-id')));
+    });
+  }
+
+  // ---------- Withdrawal history ----------
+  function renderWithdrawalLog() {
+    const wdrs = getFilteredWithdrawals();
+    if (wdrs.length === 0) {
+      withdrawalList.innerHTML = `<div class="empty">${activeFilter === 'all' ? '💸 No withdrawals yet' : '💸 No withdrawals in this range'}</div>`;
+      return;
+    }
+    const sorted = [...wdrs].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const symbol = getCurrencySymbol(selectedCurrency);
+    withdrawalList.innerHTML = sorted.map(w => `
+      <div class="entry ${w.id === newWithdrawalId ? 'new-entry' : ''}" data-id="${w.id}">
+        <div class="entry-left">
+          <div class="entry-source">${escapeHtml(w.source || 'Withdrawal')}</div>
+          <div class="entry-date">${formatDate(w.date)}</div>
+          ${w.notes ? `<div class="entry-notes">💭 ${escapeHtml(w.notes)}</div>` : ''}
+        </div>
+        <div class="entry-right">
+          <div class="entry-amount entry-amount-withdrawal">−${symbol}${Number(w.amount).toFixed(2)}</div>
+          <button class="del-btn" data-id="${w.id}">✕</button>
+        </div>
+      </div>
+    `).join('');
+
+    withdrawalList.querySelectorAll('.del-btn').forEach(btn => {
+      btn.addEventListener('click', () => deleteWithdrawal(btn.getAttribute('data-id')));
+    });
+  }
+
+  // ---------- Financial summary ----------
+  function renderFinancialSummary() {
+    const pays = getFilteredPayments();
+    const wdrs = getFilteredWithdrawals();
+    const all = [...pays, ...wdrs];
+
+    const highestPayment = pays.length ? Math.max(...pays.map(p => Number(p.amount))) : null;
+    const highestWithdrawal = wdrs.length ? Math.max(...wdrs.map(w => Number(w.amount))) : null;
+    const totalWithdrawn = wdrs.reduce((s, w) => s + Number(w.amount), 0);
+    const avgWithdrawal = wdrs.length ? totalWithdrawn / wdrs.length : null;
+
+    const monthCount = {};
+    all.forEach(e => {
+      const k = (e.date || '').slice(0, 7);
+      if (k) monthCount[k] = (monthCount[k] || 0) + 1;
+    });
+    let activeMonth = null, maxCount = 0;
+    Object.keys(monthCount).forEach(k => {
+      if (monthCount[k] > maxCount) { maxCount = monthCount[k]; activeMonth = k; }
+    });
+
+    finHighestPayment.textContent = highestPayment !== null ? formatMoney(highestPayment) : '—';
+    finHighestWithdrawal.textContent = highestWithdrawal !== null ? formatMoney(highestWithdrawal) : '—';
+    finAvgPayment.textContent = pays.length ? formatMoney(pays.reduce((s, p) => s + Number(p.amount), 0) / pays.length) : '—';
+    finAvgWithdrawal.textContent = avgWithdrawal !== null ? formatMoney(avgWithdrawal) : '—';
+    finActiveMonth.textContent = activeMonth ? monthLabel(activeMonth) : '—';
+    finTransactions.textContent = all.length;
+  }
+
+  // ---------- Charts (Chart.js) ----------
+  const charts = {};
+
+  function chartPalette() {
+    if (document.body.classList.contains('girly-theme')) {
+      return {
+        grid: 'rgba(233,30,140,0.12)', ticks: '#8a2b5e', legend: '#7a1f4e',
+        earnings: '#ff1493', withdrawals: '#ff9ecb', balance: '#16a34a',
+        sources: ['#ff1493', '#ff69b4', '#ff9ecb', '#ffc2dc', '#e91e8c', '#d63384', '#f78fb3', '#ff7eb0']
+      };
+    }
+    if (document.body.classList.contains('light-theme')) {
+      return {
+        grid: 'rgba(212,168,83,0.15)', ticks: '#5a6478', legend: '#4a2135',
+        earnings: '#d4a853', withdrawals: '#ff69b4', balance: '#16a34a',
+        sources: ['#d4a853', '#ff69b4', '#f0cd80', '#ff9ecb', '#a67c3d', '#ffc2dc', '#c084fc', '#e6c17a']
+      };
+    }
+    return {
+      grid: 'rgba(167,139,250,0.08)', ticks: '#8f97aa', legend: '#e8eaf0',
+      earnings: '#a78bfa', withdrawals: '#ff7eb6', balance: '#4ade80',
+      sources: ['#8b5cf6', '#a78bfa', '#6d4edb', '#c4b5fd', '#5b3fc4', '#d8ccff', '#7c5cff', '#b8a5ff']
+    };
+  }
+
+  function chartOptions(pal) {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { color: pal.legend, boxWidth: 10, boxHeight: 10, font: { size: 11 } } },
+        tooltip: {
+          backgroundColor: 'rgba(15,18,28,0.92)',
+          titleColor: '#f1f1f5',
+          bodyColor: '#c9cede',
+          borderColor: 'rgba(255,255,255,0.08)',
+          borderWidth: 1
+        }
+      },
+      scales: {
+        x: { grid: { color: pal.grid }, ticks: { color: pal.ticks, font: { size: 10 } } },
+        y: { grid: { color: pal.grid }, ticks: { color: pal.ticks, font: { size: 10 } }, beginAtZero: true }
+      }
+    };
+  }
+
+  function monthLabel(key) {
+    const [y, m] = key.split('-');
+    return new Date(y, m - 1, 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  }
+
+  function dayLabel(key) {
+    const d = new Date(key + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  function bucketForRange() {
+    return (activeFilter === '30d' || activeFilter === 'month') ? 'day' : 'month';
+  }
+
+  function seriesMap(entries, bucket) {
+    const map = {};
+    entries.forEach(e => {
+      const k = bucket === 'day' ? (e.date || '').slice(0, 10) : (e.date || '').slice(0, 7);
+      if (k) map[k] = (map[k] || 0) + Number(e.amount);
+    });
+    return Object.keys(map).sort().map(k => ({ key: k, total: map[k] }));
+  }
+
+  function renderVsChart() {
+    const bucket = bucketForRange();
+    const pSeries = seriesMap(getFilteredPayments(), bucket);
+    const wSeries = seriesMap(getFilteredWithdrawals(), bucket);
+    const keySet = new Set([...pSeries.map(s => s.key), ...wSeries.map(s => s.key)]);
+    const keys = Array.from(keySet).sort();
+    const pMap = {};
+    pSeries.forEach(s => pMap[s.key] = s.total);
+    const wMap = {};
+    wSeries.forEach(s => wMap[s.key] = s.total);
+
+    const pal = chartPalette();
+    charts.vs = new Chart(document.getElementById('vsChart'), {
+      type: 'bar',
+      data: {
+        labels: keys.map(k => bucket === 'day' ? dayLabel(k) : monthLabel(k)),
+        datasets: [
+          { label: 'Earnings', data: keys.map(k => pMap[k] || 0), backgroundColor: pal.earnings, borderRadius: 5, maxBarThickness: 28 },
+          { label: 'Withdrawals', data: keys.map(k => wMap[k] || 0), backgroundColor: pal.withdrawals, borderRadius: 5, maxBarThickness: 28 }
+        ]
+      },
+      options: chartOptions(pal)
+    });
+  }
+
+  function renderBalanceChart() {
+    const bucket = bucketForRange();
+    const { from, to } = getDateBounds();
+
+    // Cumulative balance over ALL data so the trend is truthful, then show
+    // only the buckets that fall inside the active filter range.
+    const all = [
+      ...payments.map(p => ({ date: p.date, amt: Number(p.amount) })),
+      ...withdrawals.map(w => ({ date: w.date, amt: -Number(w.amount) }))
+    ].sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+
+    const byKey = {};
+    all.forEach(e => {
+      const k = bucket === 'day' ? (e.date || '').slice(0, 10) : (e.date || '').slice(0, 7);
+      if (k) byKey[k] = (byKey[k] || 0) + e.amt;
+    });
+
+    let run = 0;
+    const cum = {};
+    Object.keys(byKey).sort().forEach(k => { run += byKey[k]; cum[k] = run; });
+
+    const keys = Object.keys(cum).sort().filter(k => {
+      const t = new Date((k + (bucket === 'day' ? '' : '-01')) + 'T00:00:00').getTime();
+      if (from && t < from.getTime()) return false;
+      if (to && t > to.getTime()) return false;
+      return true;
+    });
+
+    const pal = chartPalette();
+    charts.balance = new Chart(document.getElementById('balanceChart'), {
+      type: 'line',
+      data: {
+        labels: keys.map(k => bucket === 'day' ? dayLabel(k) : monthLabel(k)),
+        datasets: [{
+          label: 'Available Balance',
+          data: keys.map(k => cum[k]),
+          borderColor: pal.balance,
+          backgroundColor: pal.balance + '33',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 3,
+          pointBackgroundColor: pal.balance,
+          borderWidth: 2
+        }]
+      },
+      options: chartOptions(pal)
+    });
+  }
+
+  function renderMonthlyEarningsChart() {
+    const s = seriesMap(getFilteredPayments(), 'month');
+    const pal = chartPalette();
+    charts.monthlyEarnings = new Chart(document.getElementById('monthlyEarningsChart'), {
+      type: 'bar',
+      data: {
+        labels: s.map(x => monthLabel(x.key)),
+        datasets: [{ label: 'Monthly Earnings', data: s.map(x => x.total), backgroundColor: pal.earnings, borderRadius: 5, maxBarThickness: 28 }]
+      },
+      options: chartOptions(pal)
+    });
+  }
+
+  function renderMonthlyWithdrawalsChart() {
+    const s = seriesMap(getFilteredWithdrawals(), 'month');
+    const pal = chartPalette();
+    charts.monthlyWithdrawals = new Chart(document.getElementById('monthlyWithdrawalsChart'), {
+      type: 'bar',
+      data: {
+        labels: s.map(x => monthLabel(x.key)),
+        datasets: [{ label: 'Monthly Withdrawals', data: s.map(x => x.total), backgroundColor: pal.withdrawals, borderRadius: 5, maxBarThickness: 28 }]
+      },
+      options: chartOptions(pal)
+    });
+  }
+
+  function renderSourceChart() {
+    const map = {};
+    getFilteredPayments().forEach(p => {
+      const s = (p.source || '').trim() || 'Unspecified';
+      map[s] = (map[s] || 0) + Number(p.amount);
+    });
+    const entries = Object.entries(map).sort((a, b) => b[1] - a[1]);
+    const pal = chartPalette();
+    const legendPos = window.innerWidth < 700 ? 'bottom' : 'right';
+    charts.source = new Chart(document.getElementById('sourceChart'), {
+      type: 'doughnut',
+      data: {
+        labels: entries.map(e => e[0]),
+        datasets: [{
+          data: entries.map(e => e[1]),
+          backgroundColor: pal.sources,
+          borderWidth: 2,
+          borderColor: 'rgba(0,0,0,0.1)'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { position: legendPos, labels: { color: pal.legend, boxWidth: 10, font: { size: 10 }, padding: 8 } },
+          tooltip: {
+            backgroundColor: 'rgba(15,18,28,0.92)',
+            titleColor: '#f1f1f5',
+            bodyColor: '#c9cede',
+            borderColor: 'rgba(255,255,255,0.08)',
+            borderWidth: 1
+          }
+        }
+      }
+    });
+  }
+
+  function renderCharts() {
+    const ids = ['vsChart', 'balanceChart', 'monthlyEarningsChart', 'monthlyWithdrawalsChart', 'sourceChart'];
+
+    if (!window.Chart) {
+      chartEmpty.textContent = '📊 Chart library unavailable — check your connection.';
+      chartEmpty.hidden = false;
+      ids.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+      return;
+    }
+
+    Object.keys(charts).forEach(k => {
+      try { charts[k].destroy(); } catch (e) { /* ignore */ }
+      charts[k] = null;
+    });
+
+    const hasData = getFilteredPayments().length > 0 || getFilteredWithdrawals().length > 0;
+    chartEmpty.hidden = hasData;
+    chartEmpty.textContent = '📊 Add payments or withdrawals to see charts';
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = hasData ? '' : 'none';
+    });
+    if (!hasData) return;
+
+    renderVsChart();
+    renderBalanceChart();
+    renderMonthlyEarningsChart();
+    renderMonthlyWithdrawalsChart();
+    renderSourceChart();
+  }
+
+  // ---------- Add / delete flows ----------
+  addBtn.addEventListener('click', addPayment);
+
+  async function addPayment() {
+    const amount = parseFloat(amountInput.value);
+    if (isNaN(amount) || amount <= 0) {
+      statusMsg.textContent = 'Enter a valid amount';
+      return;
+    }
+
+    const id = Date.now().toString();
+    // Update in-memory state first so the UI and totals never depend on a
+    // fresh storage read (which is what was silently dropping prior entries).
+    payments.push({
+      id: id,
+      amount: amount,
+      source: sourceInput.value.trim(),
+      date: dateInput.value || todayStr
+    });
+    newEntryId = id;
+
+    renderAll(true);
+
+    amountInput.value = '';
+    sourceInput.value = '';
+    dateInput.value = todayStr;
+
+    const ok = await savePayments();
+    if (!ok) {
+      // Retry once after a beat in case it was a transient storage hiccup
+      setTimeout(async () => {
+        const retryOk = await savePayments();
+        if (!retryOk) statusMsg.textContent = 'Not saved — check storage/permissions';
+      }, 500);
+    }
+  }
+
+  async function deletePayment(id) {
+    if (!confirm('Delete this payment? Totals and analytics will update.')) return;
+    payments = payments.filter(p => p.id !== id);
+    renderAll(false);
+    await savePayments();
+  }
+
+  withdrawalBtn.addEventListener('click', addWithdrawal);
+
+  async function addWithdrawal() {
+    const amount = parseFloat(withdrawalAmountInput.value);
+    if (isNaN(amount) || amount <= 0) {
+      withdrawalStatus.textContent = 'Enter a valid amount';
+      return;
+    }
+
+    const id = Date.now().toString();
+    withdrawals.push({
+      id: id,
+      amount: amount,
+      source: withdrawalSourceInput.value.trim() || 'Withdrawal',
+      notes: withdrawalNotesInput.value.trim(),
+      date: withdrawalDateInput.value || todayStr
+    });
+    newWithdrawalId = id;
+
+    renderAll(false);
+
+    withdrawalAmountInput.value = '';
+    withdrawalSourceInput.value = '';
+    withdrawalNotesInput.value = '';
+    withdrawalDateInput.value = todayStr;
+
+    const ok = await saveWithdrawals();
+    if (!ok) {
+      setTimeout(async () => {
+        const retryOk = await saveWithdrawals();
+        if (!retryOk) withdrawalStatus.textContent = 'Not saved — check storage/permissions';
+      }, 500);
+    }
+  }
+
+  async function deleteWithdrawal(id) {
+    if (!confirm('Delete this withdrawal? Balance and analytics will update.')) return;
+    withdrawals = withdrawals.filter(w => w.id !== id);
+    renderAll(false);
+    await saveWithdrawals();
+  }
+
+  // ---------- Isolated rendering ----------
+  // One failing feature (e.g. analytics or charts) must never blank the app.
+  function safeRun(name, fn) {
+    try { fn(); } catch (e) { logError(name + ' failed', e); }
+  }
+
+  function renderAll(animate = false) {
+    safeRun('renderTotal', () => renderTotal(animate));
+    safeRun('renderStats', renderStats);
+    safeRun('renderPaymentLog', renderPaymentLog);
+    safeRun('renderWithdrawalLog', renderWithdrawalLog);
+    safeRun('renderFinancialSummary', renderFinancialSummary);
+    safeRun('renderCharts', renderCharts);
+  }
+
+  function refreshAll() {
+    renderAll(false);
+  }
+
+  // Currency Converter Logic
+  let currentRate = 0;
+  let fromCurrency = 'USD';
+  let toCurrency = 'INR';
+  const exchangeRateDisplay = document.getElementById('exchangeRate');
+  const fromInput = document.getElementById('fromInput');
+  const toInput = document.getElementById('toInput');
+  const rateDot = document.getElementById('rateDot');
+  const rateStatus = document.getElementById('rateStatus');
+  const rateUpdate = document.getElementById('rateUpdate');
+  const converterFromCurrency = document.getElementById('converterFromCurrency');
+  const converterToCurrency = document.getElementById('converterToCurrency');
+  const fromCurrencyLabel = document.getElementById('fromCurrencyLabel');
+  const toCurrencyLabel = document.getElementById('toCurrencyLabel');
+  const fromCurrencyValue = document.getElementById('fromCurrencyValue');
+  const fromInputLabel = document.getElementById('fromInputLabel');
+  const toInputLabel = document.getElementById('toInputLabel');
+
+  function updateConverterLabels() {
+    const fromSymbol = currencySymbols[fromCurrency];
+    const toSymbol = currencySymbols[toCurrency];
+
+    fromCurrencyLabel.textContent = fromCurrency;
+    toCurrencyLabel.textContent = toCurrency;
+    fromCurrencyValue.textContent = fromSymbol + '1.00';
+    fromInputLabel.textContent = fromCurrency + ' Amount';
+    toInputLabel.textContent = toCurrency + ' Amount';
+  }
+
+  async function fetchExchangeRate() {
+    rateDot.className = 'rate-dot loading';
+    rateStatus.textContent = 'Fetching rate...';
+
+    // All supported currencies
+    const allCurrencies = 'USD,INR,EUR,GBP,JPY,AUD,CAD,CNY';
+
+    const providers = [
+      {
+        url: `https://api.frankfurter.dev/v1/latest?base=${fromCurrency}&symbols=${allCurrencies}`,
+        parse: (data) => (data && data.rates) ? data.rates[toCurrency] : null
+      },
+      {
+        url: `https://api.frankfurter.app/latest?from=${fromCurrency}&to=${allCurrencies}`,
+        parse: (data) => (data && data.rates) ? data.rates[toCurrency] : null
+      },
+      {
+        url: `https://open.er-api.com/v6/latest/${fromCurrency}`,
+        parse: (data) => (data && data.result === 'success' && data.rates) ? data.rates[toCurrency] : null
+      }
+    ];
+
+    for (const provider of providers) {
+      try {
+        const response = await fetch(provider.url);
+        if (!response.ok) throw new Error('Bad response: ' + response.status);
+
+        const data = await response.json();
+        const rate = provider.parse(data);
+        if (!rate || isNaN(rate)) throw new Error('No rate in response');
+
+        currentRate = rate;
+        const toSymbol = currencySymbols[toCurrency];
+        const decimals = (toCurrency === 'JPY' || toCurrency === 'CNY') ? 2 : 2;
+        exchangeRateDisplay.textContent = toSymbol + currentRate.toFixed(decimals);
+        rateDot.className = 'rate-dot';
+        rateStatus.textContent = 'Live rate';
+
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        rateUpdate.textContent = `Updated ${timeStr}`;
+
+        // If from input has a value, refresh the converted figure
+        if (fromInput.value) {
+          const amount = parseFloat(fromInput.value);
+          if (!isNaN(amount)) {
+            toInput.value = (amount * currentRate).toFixed(decimals);
+          }
+        }
+        return;
+      } catch (error) {
+        console.error('Exchange rate fetch failed for ' + provider.url + ':', error);
+      }
+    }
+
+    // All providers failed
+    const toSymbol = currencySymbols[toCurrency];
+    exchangeRateDisplay.textContent = toSymbol + '—';
+    rateDot.className = 'rate-dot error';
+    rateStatus.textContent = 'Rate unavailable';
+    rateUpdate.textContent = 'Check connection';
+    setTimeout(fetchExchangeRate, 30 * 1000);
+  }
+
+  // Convert on input
+  fromInput.addEventListener('input', () => {
+    const amount = parseFloat(fromInput.value);
+    const decimals = (toCurrency === 'JPY' || toCurrency === 'CNY') ? 2 : 2;
+    if (!isNaN(amount) && currentRate > 0) {
+      toInput.value = (amount * currentRate).toFixed(decimals);
+    } else {
+      toInput.value = '';
+    }
+  });
+
+  // Allow bidirectional conversion
+  toInput.addEventListener('input', () => {
+    const amount = parseFloat(toInput.value);
+    const decimals = (fromCurrency === 'JPY' || fromCurrency === 'CNY') ? 2 : 2;
+    if (!isNaN(amount) && currentRate > 0) {
+      fromInput.value = (amount / currentRate).toFixed(decimals);
+    } else {
+      fromInput.value = '';
+    }
+  });
+
+  // Handle currency changes
+  converterFromCurrency.addEventListener('change', () => {
+    fromCurrency = converterFromCurrency.value;
+    updateConverterLabels();
+    fetchExchangeRate();
+  });
+
+  converterToCurrency.addEventListener('change', () => {
+    toCurrency = converterToCurrency.value;
+    updateConverterLabels();
+    fetchExchangeRate();
+  });
+
+  // Initialize converter (isolated — converter issues never break the app)
+  safeRun('updateConverterLabels', updateConverterLabels);
+  safeRun('fetchExchangeRate', fetchExchangeRate);
+
+  // Refresh rate every 5 minutes
+  setInterval(fetchExchangeRate, 5 * 60 * 1000);
+
+  // Motion Graphics: Dynamic particle generation (only during intro)
+  const particlesContainer = document.querySelector('.particles');
+  let particleInterval = setInterval(() => {
+    if (document.querySelectorAll('.particle').length < 20) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 2 + 's';
+      particlesContainer.appendChild(particle);
+
+      setTimeout(() => particle.remove(), 8000);
+    }
+  }, 800);
+
+  // Smoothly transition animations after intro completes (3 seconds)
+  setTimeout(() => {
+    const summaryCard = document.querySelector('.summary');
+    const brandHeader = document.querySelector('.brand-header');
+
+    // Add transition class smoothly
+    summaryCard.style.transition = 'all 3s ease-out';
+    summaryCard.classList.add('intro-complete');
+
+    if (brandHeader) {
+      brandHeader.classList.add('intro-complete');
+    }
+
+    particlesContainer.classList.add('intro-complete');
+
+    // Stop generating new particles
+    clearInterval(particleInterval);
+
+    // Smoothly fade out existing particles over time
+    document.querySelectorAll('.particle').forEach((p, index) => {
+      setTimeout(() => {
+        p.style.transition = 'opacity 2s ease';
+        p.style.opacity = '0';
+        setTimeout(() => p.remove(), 2000);
+      }, index * 100); // Stagger the fade-out
+    });
+
+    console.log('Intro complete - animations slowing down smoothly');
+  }, 3000);
+
+  // ---------- Init ----------
+  (async function init() {
+    try {
+      initTheme();
+      initCurrency();
+      initFilter();
+      await migrateLegacyData();
+      payments = await loadPayments();
+      withdrawals = await loadWithdrawals();
+      if (corruptedKeys.length) showRecoveryBanner();
+      refreshAll();
+    } catch (e) {
+      logError('Initialization failed', e);
+      showErrorScreen();
+    }
+  })();
+</script>
+</body>
+</html>
