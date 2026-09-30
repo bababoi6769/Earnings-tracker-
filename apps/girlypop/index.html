@@ -2,8 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<title>Claude Coding Earnings Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Earnings Tracker — Girly Pop Edition</title>
+<meta name="description" content="A pink-themed earnings tracker with payment history, currency switching and a live currency converter. Everything is saved locally in your browser.">
+<meta name="author" content="bababoi6769">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#ff4fa3">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%238b5cf6'/%3E%3Cpath d='M14 42l12-14 9 9 15-19' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
   html, body { width: 100%; overflow-x: hidden; }
@@ -316,7 +321,6 @@
   .summary.intro-complete::after {
     animation: float 25s ease-in-out infinite reverse;
   }
-  }
 
   @media (min-width: 768px) {
     .summary::after {
@@ -428,14 +432,12 @@
   }
 
   .add-card {
-    .add-card {
     background: #fff5f9;
     border: 1px solid rgba(255, 105, 180, 0.30);
     border-radius: 16px;
     padding: 18px;
     margin-bottom: 16px;
     width: 100%;
-}
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
   }
 
@@ -1097,6 +1099,7 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1122,284 +1125,18 @@
     transition: transform 0.3s ease;
   }
 
-  /* Light Theme */
-  body.light-theme {
-    background: #fff7fb;
-}
-
-  body.light-theme .summary {
-    background: linear-gradient(155deg, #ffffff 0%, #fffbf5 55%, #ffffff 100%);
-    border: 1px solid rgba(212, 168, 83, 0.35);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 0 0 1px rgba(212,168,83,0.08) inset;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    body.light-theme .summary:hover {
-      box-shadow: 0 12px 48px rgba(0,0,0,0.12), 0 0 0 1px rgba(212,168,83,0.15) inset;
-      border-color: rgba(212, 168, 83, 0.45);
-    }
-  }
-
-  body.light-theme .summary::before {
-    background: radial-gradient(circle, rgba(255, 105, 180, 0.18) 0%, transparent 70%);
-  }
-
-  body.light-theme .summary::after {
-    background: radial-gradient(circle, rgba(255, 105, 180, 0.18) 0%, transparent 70%);
-  }
-
-  body.light-theme .ring {
-    border: 2px solid rgba(255, 105, 180, 0.18);
-  }
-
-  body.light-theme .ring::before {
-    background: #ff69b4;
-    box-shadow: 0 0 12px #ff69b4;
-  }
-
- body.light-theme .badge {
-    background: rgba(255, 105, 180, 0.12);
-    border: 1px solid rgba(255, 105, 180, 0.45);
-    color: #d63384;
-}
-
-body.light-theme .dot {
-    background: #ff4fa3;
-    box-shadow: 0 0 8px #ff4fa3;
-}
-
-  body.light-theme .count {
-    color: #5a6478;
-  }
-
-  body.light-theme .label {
-    color: #4a5568;
-  }
-
-body.light-theme .amount {
-    background: linear-gradient(
-        180deg,
-        #4a2135 0%,
-        #7a3158 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-}
-
-body.light-theme .amount .currency {
-    background: linear-gradient(
-        180deg,
-        #ff69b4 0%,
-        #c084fc 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-}
-  body.light-theme .digit {
-    background: linear-gradient(
-        180deg,
-        #4a2135 0%,
-        #7a3158 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-}
-
-  body.light-theme .sub-row {
-    border-top: 1px solid rgba(212,168,83,0.25);
-  }
-
-  body.light-theme .sub-stat-val {
-    color: #1a1a1a;
-  }
-
-  body.light-theme .sub-stat-key {
-    color: #5a6478;
-  }
-
-  body.light-theme .add-card,
-body.light-theme .converter-card {
-    background: #fff5f9;
-    border: 1px solid rgba(255, 105, 180, 0.28);
-    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.08);
-}
-
-  @media (hover: hover) and (pointer: fine) {
-   body.light-theme .add-card:hover,
-body.light-theme .converter-card:hover {
-    border-color: rgba(255, 79, 163, 0.50);
-    box-shadow: 0 10px 28px rgba(255, 105, 180, 0.15);
-}
-  }
-
-  body.light-theme .add-title,
-  body.light-theme .converter-title {
-    color: #a67c3d;
-  }
-
-  body.light-theme .field label,
-  body.light-theme .converter-field label {
-    color: #5a6478;
-  }
-
- body.light-theme input {
-    background: #fffafd;
-    border: 1px solid rgba(255, 105, 180, 0.35);
-    color: #4a2135;
-}
-
-  body.light-theme input:focus {
-    background: #ffffff;
-    border-color: #ff4fa3;
-    box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.15);
-}
-
-  @media (hover: hover) and (pointer: fine) {
-    body.light-theme input:hover:not(:focus) {
-      border-color: rgba(212,168,83,0.4);
-    }
-  }
-
-  body.light-theme button {
-    background: linear-gradient(180deg, #f0cd80 0%, #d4a853 100%);
-    color: #14100a;
-    box-shadow: 0 4px 14px rgba(212,168,83,0.3);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    body.light-theme button:hover {
-      box-shadow: 0 8px 24px rgba(212,168,83,0.45);
-    }
-  }
-
-  body.light-theme .log-title {
-    color: #4a5568;
-  }
-
-  body.light-theme .entry {
-    background: #fff5f9;
-    border: 1px solid rgba(255, 105, 180, 0.25);
-    box-shadow: 0 6px 18px rgba(255, 105, 180, 0.08);
-}
-
-  @media (hover: hover) and (pointer: fine) {
-    body.light-theme .entry:hover {
-    background: #fff0f6;
-    border-color: rgba(255, 105, 180, 0.40);
-    box-shadow: 0 8px 20px rgba(255, 105, 180, 0.12);
-}
-  }
-
-  body.light-theme .entry-source {
-    color: #4a2135;
-}
-
-  @media (hover: hover) and (pointer: fine) {
-   body.light-theme .entry:hover .entry-source {
-    color: #d63384;
-}
-  }
-
-  body.light-theme .entry-date {
-    color: #5a6478;
-  }
-
-  body.light-theme .entry-amount {
-    color: #a67c3d;
-  }
-
-  body.light-theme .del-btn {
-    color: #5a6478;
-  }
-
-  body.light-theme .empty {
-    color: #5a6478;
-  }
-
-  body.light-theme .status {
-    color: #5a6478;
-  }
-
-  body.light-theme .brand-name {
-    background: linear-gradient(135deg, #f0cd80 0%, #d4a853 50%, #f0cd80 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-  }
-
-  body.light-theme .brand-sub {
-    color: #5a6478;
-  }
-
-  body.light-theme .brand-tag {
-    background: rgba(212,168,83,0.15);
-    border: 1px solid rgba(212,168,83,0.35);
-    color: #a67c3d;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    body.light-theme .brand-tag:hover {
-      background: rgba(212,168,83,0.25);
-      border-color: rgba(212,168,83,0.5);
-    }
-  }
-
-  body.light-theme .rate-label,
-  body.light-theme .rate-info {
-    color: #5a6478;
-  }
-
-  body.light-theme .rate-value {
-    color: #1a1a1a;
-  }
-
-  body.light-theme .rate-arrow {
-    color: #a67c3d;
-  }
-
-  body.light-theme .rate-info {
-    border-top: 1px solid rgba(212,168,83,0.25);
-  }
-
-  body.light-theme .theme-toggle {
-    background: rgba(212,168,83,0.15);
-    border: 1px solid rgba(212,168,83,0.35);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    body.light-theme .theme-toggle:hover {
-      background: rgba(212,168,83,0.25);
-      border-color: rgba(212,168,83,0.5);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-  }
-
-  body.light-theme .particle {
-    background: #d4a853;
-  }
-
-  body.light-theme .converter-field input {
-    background: #fffafd;
-    border: 1px solid rgba(255, 105, 180, 0.35);
-    color: #4a2135;
-}
-  body.light-theme .converter-field input:focus {
-    background: #ffffff;
-    border-color: #ff4fa3;
-    box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.15);
-}
 /* =========================================
-   DARK THEME - FINAL OVERRIDE
+   GIRLY POP DARK THEME
    ========================================= */
 
 /* Main page */
-body:not(.light-theme) {
+body.dark-theme {
     background: #080b14 !important;
     color: #e8eaf0 !important;
 }
 
 /* Main earnings card */
-body:not(.light-theme) .summary {
+body.dark-theme .summary {
     background: linear-gradient(
         135deg,
         #151a2e 0%,
@@ -1407,83 +1144,83 @@ body:not(.light-theme) .summary {
         #161a2d 100%
     ) !important;
 
-    border: 1px solid rgba(124, 92, 255, 0.45) !important;
+    border: 1px solid rgba(255, 79, 163, 0.45) !important;
 
     box-shadow:
         0 12px 35px rgba(0, 0, 0, 0.35),
-        0 0 30px rgba(124, 92, 255, 0.08) !important;
+        0 0 30px rgba(255, 79, 163, 0.08) !important;
 }
 
 /* Main lower cards */
-body:not(.light-theme) .add-card,
-body:not(.light-theme) .converter-card {
+body.dark-theme .add-card,
+body.dark-theme .converter-card {
     background: #121827 !important;
 
-    border: 1px solid rgba(124, 92, 255, 0.28) !important;
+    border: 1px solid rgba(255, 79, 163, 0.28) !important;
 
     box-shadow:
         0 8px 25px rgba(0, 0, 0, 0.25) !important;
 }
 
 /* Payment history entries */
-body:not(.light-theme) #logList .entry {
+body.dark-theme #logList .entry {
     background: #182033 !important;
 
-    border: 1px solid rgba(124, 92, 255, 0.22) !important;
+    border: 1px solid rgba(255, 79, 163, 0.22) !important;
 
     box-shadow:
         0 5px 16px rgba(0, 0, 0, 0.18) !important;
 }
 
 /* Entry hover */
-body:not(.light-theme) #logList .entry:hover {
+body.dark-theme #logList .entry:hover {
     background: #1d263b !important;
 
-    border-color: rgba(139, 92, 246, 0.55) !important;
+    border-color: rgba(255, 105, 180, 0.55) !important;
 
     box-shadow:
-        0 8px 22px rgba(124, 92, 255, 0.12) !important;
+        0 8px 22px rgba(255, 79, 163, 0.12) !important;
 }
 
 /* All inputs */
-body:not(.light-theme) input,
-body:not(.light-theme) select,
-body:not(.light-theme) .converter-card input,
-body:not(.light-theme) .converter-card select {
+body.dark-theme input,
+body.dark-theme select,
+body.dark-theme .converter-card input,
+body.dark-theme .converter-card select {
     background: #0c101c !important;
 
     color: #e8eaf0 !important;
 
-    border: 1px solid rgba(124, 92, 255, 0.32) !important;
+    border: 1px solid rgba(255, 79, 163, 0.32) !important;
 }
 
 /* Input focus */
-body:not(.light-theme) input:focus,
-body:not(.light-theme) select:focus {
+body.dark-theme input:focus,
+body.dark-theme select:focus {
     background: #101522 !important;
 
-    border-color: #8b5cf6 !important;
+    border-color: #ff4fa3 !important;
 
     box-shadow:
-        0 0 0 3px rgba(139, 92, 246, 0.16) !important;
+        0 0 0 3px rgba(255, 105, 180, 0.16) !important;
 }
 
 /* Labels */
-body:not(.light-theme) label,
-body:not(.light-theme) .field label,
-body:not(.light-theme) .converter-field label {
+body.dark-theme label,
+body.dark-theme .field label,
+body.dark-theme .converter-field label {
     color: #9ca3b8 !important;
 }
 
 /* Card titles */
-body:not(.light-theme) .add-title,
-body:not(.light-theme) .converter-title {
-    color: #a78bfa !important;
+body.dark-theme .add-title,
+body.dark-theme .converter-title {
+    color: #ff9ecb !important;
 }
 
 /* Main amount */
-body:not(.light-theme) .amount,
-body:not(.light-theme) .digit {
+body.dark-theme .amount,
+body.dark-theme .digit {
     color: #f1f1f5 !important;
 
     -webkit-text-fill-color: #f1f1f5 !important;
@@ -1492,71 +1229,71 @@ body:not(.light-theme) .digit {
 }
 
 /* Currency symbol */
-body:not(.light-theme) .currency {
-    color: #a78bfa !important;
+body.dark-theme .currency {
+    color: #ff9ecb !important;
 
-    -webkit-text-fill-color: #a78bfa !important;
+    -webkit-text-fill-color: #ff9ecb !important;
 }
 
 /* Statistics */
-body:not(.light-theme) .sub-stat-val {
+body.dark-theme .sub-stat-val {
     color: #f1f1f5 !important;
 }
 
-body:not(.light-theme) .sub-stat-key {
+body.dark-theme .sub-stat-key {
     color: #81889b !important;
 }
 
 /* Divider */
-body:not(.light-theme) .sub-row {
-    border-color: rgba(124, 92, 255, 0.18) !important;
+body.dark-theme .sub-row {
+    border-color: rgba(255, 79, 163, 0.18) !important;
 }
 
 /* Payment history text */
-body:not(.light-theme) .entry-source {
+body.dark-theme .entry-source {
     color: #f1f1f5 !important;
 }
 
-body:not(.light-theme) .entry-date {
+body.dark-theme .entry-date {
     color: #8f97aa !important;
 }
 
-body:not(.light-theme) .entry-amount {
-    color: #a78bfa !important;
+body.dark-theme .entry-amount {
+    color: #ff9ecb !important;
 }
 
 /* Add Entry button */
-body:not(.light-theme) button {
+body.dark-theme button {
     background: linear-gradient(
         135deg,
-        #8b5cf6 0%,
-        #6d4edb 50%,
-        #5b3fc4 100%
+        #ff69b4 0%,
+        #ff4fa3 50%,
+        #c084fc 100%
     ) !important;
 
     color: #ffffff !important;
 
     box-shadow:
-        0 6px 18px rgba(109, 78, 219, 0.30) !important;
+        0 6px 18px rgba(255, 79, 163, 0.30) !important;
 }
 
 /* Button hover */
-body:not(.light-theme) button:hover {
+body.dark-theme button:hover {
     box-shadow:
-        0 10px 25px rgba(139, 92, 246, 0.40) !important;
+        0 10px 25px rgba(255, 105, 180, 0.40) !important;
 }
 
 /* Badge */
-body:not(.light-theme) .badge {
-    background: rgba(124, 92, 255, 0.12) !important;
+body.dark-theme .badge {
+    background: rgba(255, 79, 163, 0.12) !important;
 
-    border: 1px solid rgba(139, 92, 246, 0.38) !important;
+    border: 1px solid rgba(255, 105, 180, 0.38) !important;
 
-    color: #b8a5ff !important;
+    color: #ffb6d2 !important;
 }
 
 /* Status dot */
-body:not(.light-theme) .dot {
+body.dark-theme .dot {
     background: #22c55e !important;
 
     box-shadow:
@@ -1565,41 +1302,189 @@ body:not(.light-theme) .dot {
 }
 
 /* Brand name */
-body:not(.light-theme) .brand-name {
-    color: #b8a5ff !important;
+body.dark-theme .brand-name {
+    color: #ffb6d2 !important;
 
-    -webkit-text-fill-color: #b8a5ff !important;
+    -webkit-text-fill-color: #ffb6d2 !important;
 
     background: none !important;
 }
 
 /* Converter values */
-body:not(.light-theme) .rate-value {
+body.dark-theme .rate-value {
     color: #f1f1f5 !important;
 }
 
-body:not(.light-theme) .rate-label {
+body.dark-theme .rate-label {
     color: #8f97aa !important;
 }
 
-body:not(.light-theme) .rate-arrow {
-    color: #a78bfa !important;
+body.dark-theme .rate-arrow {
+    color: #ff9ecb !important;
 }
 
 /* Theme toggle */
-body:not(.light-theme) .theme-toggle {
+body.dark-theme .theme-toggle {
     background: #151a29 !important;
 
-    border: 1px solid rgba(139, 92, 246, 0.35) !important;
+    border: 1px solid rgba(255, 105, 180, 0.35) !important;
 
     box-shadow:
         0 5px 18px rgba(0, 0, 0, 0.30) !important;
 }
+
+/* ===== GIRLY POP PINK FIX ===== */
+
+/* Main Log a Payment card */
+body:not(.dark-theme) .add-card {
+    background: #fff5f9 !important;
+    border: 1px solid #ffb6d2 !important;
+    box-shadow: 0 8px 25px rgba(255, 105, 180, 0.12) !important;
+}
+
+/* Log a Payment inputs */
+.add-card input,
+body:not(.dark-theme) .add-card select {
+    background: #ffffff !important;
+    color: #4a2135 !important;
+    border: 1px solid #ffb6d2 !important;
+}
+
+/* Log a Payment input focus */
+.add-card input:focus,
+body:not(.dark-theme) .add-card select:focus {
+    background: #ffffff !important;
+    border-color: #ff4fa3 !important;
+    box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.15) !important;
+}
+
+/* Log a Payment labels */
+body:not(.dark-theme) .add-card label {
+    color: #9a7185 !important;
+}
+
+/* Add Entry button */
+body:not(.dark-theme) .add-card button {
+    background: linear-gradient(
+        135deg,
+        #ff69b4 0%,
+        #ff4fa3 50%,
+        #c084fc 100%
+    ) !important;
+
+    color: #ffffff !important;
+
+    box-shadow:
+        0 6px 18px rgba(255, 79, 163, 0.30) !important;
+}
+
+/* Payment History entries */
+body:not(.dark-theme) #logList .entry {
+    background: #fff0f6 !important;
+    border: 1px solid #ff9fc8 !important;
+    box-shadow: 0 6px 18px rgba(255, 105, 180, 0.10) !important;
+}
+
+/* Payment History text */
+body:not(.dark-theme) .entry-source {
+    color: #4a2135 !important;
+}
+
+body:not(.dark-theme) .entry-date {
+    color: #9a7185 !important;
+}
+
+body:not(.dark-theme) .entry-amount {
+    color: #d63384 !important;
+}
+
+/* Currency Converter */
+body:not(.dark-theme) .converter-card {
+    background: #fff0f6 !important;
+    border: 1px solid #ff9fc8 !important;
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.10) !important;
+}
+
+/* Converter inputs */
+.converter-card input,
+body:not(.dark-theme) .converter-card select {
+    background: #ffffff !important;
+    color: #4a2135 !important;
+    border: 1px solid #ff9fc8 !important;
+}
+
+/* ===== BARBIE PINK NUMBERS FIX ===== */
+
+/* Main earnings amount */
+body:not(.dark-theme) .amount {
+    color: #ff69b4 !important;
+    -webkit-text-fill-color: #ff69b4 !important;
+    background: none !important;
+}
+
+/* Individual animated digits */
+body:not(.dark-theme) .digit {
+    color: #ff69b4 !important;
+    -webkit-text-fill-color: #ff69b4 !important;
+    background: none !important;
+}
+
+/* Light theme version */
+body.light-theme .amount,
+body:not(.dark-theme) body.light-theme .digit {
+    color: #ff69b4 !important;
+    -webkit-text-fill-color: #ff69b4 !important;
+    background: none !important;
+}
+  /* =========================================
+     ACCESSIBILITY & MOTION POLISH
+     ========================================= */
+  /* Delete buttons stay quiet — a small ✕ that only warns on hover. */
+  #logList .del-btn,
+  #withdrawalList .del-btn {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: inherit;
+    opacity: 0.5;
+  }
+
+  #logList .del-btn:hover,
+  #withdrawalList .del-btn:hover {
+    opacity: 1;
+    color: #ff6b6b !important;
+    background: rgba(255, 107, 107, 0.12) !important;
+  }
+
+  button:focus-visible,
+  .pill:focus-visible,
+  .theme-toggle:focus-visible,
+  .del-btn:focus-visible {
+    outline: 2px solid #8b5cf6;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .particles { display: none !important; }
+  }
 </style>
 </head>
 <body>
+  <noscript>
+    <div style="max-width: 520px; margin: 40px auto; padding: 18px 20px; border-radius: 14px; background: #121827; color: #e8eaf0; font: 14px/1.6 system-ui, -apple-system, 'Segoe UI', sans-serif; text-align: center;">
+      This earnings tracker needs JavaScript. Turn it on and reload — everything is stored
+      locally in your browser, nothing is uploaded.
+    </div>
+  </noscript>
+
   <!-- Background Particles -->
-  <div class="particles">
+  <div class="particles" aria-hidden="true">
     <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
     <div class="particle" style="left: 20%; animation-delay: 1.5s;"></div>
     <div class="particle" style="left: 30%; animation-delay: 3s;"></div>
@@ -1645,7 +1530,7 @@ body:not(.light-theme) .theme-toggle {
     <div class="add-card">
       <div class="add-title">Log a payment</div>
       <div class="currency-selector">
-        <label>Currency:</label>
+        <label for="currencySelect">Currency:</label>
         <select id="currencySelect">
           <option value="INR" selected>🇮🇳 Indian Rupee (₹)</option>
           <option value="USD">🇺🇸 US Dollar ($)</option>
@@ -1659,26 +1544,26 @@ body:not(.light-theme) .theme-toggle {
       </div>
       <div class="field-row">
         <div class="field">
-          <label>Amount (<span id="currencyLabel">₹</span>)</label>
-          <input id="amountInput" type="number" step="0.01" placeholder="12500.00" inputmode="decimal" />
+          <label for="amountInput">Amount (<span id="currencyLabel">₹</span>)</label>
+          <input id="amountInput" type="number" step="0.01" placeholder="12500.00" inputmode="decimal" autocomplete="off" />
         </div>
         <div class="field">
-          <label>Source</label>
-          <input id="sourceInput" type="text" placeholder="Client / project" />
+          <label for="sourceInput">Source</label>
+          <input id="sourceInput" type="text" placeholder="Client / project" autocomplete="off" />
         </div>
       </div>
       <div class="field-row">
         <div class="field">
-          <label>Date</label>
+          <label for="dateInput">Date</label>
           <input id="dateInput" type="date" />
         </div>
       </div>
-      <button id="addBtn">Add Entry</button>
-      <div class="status" id="statusMsg"></div>
+      <button id="addBtn" type="button">Add Entry</button>
+      <div class="status" id="statusMsg" role="status" aria-live="polite"></div>
     </div>
 
     <div class="log-title">Payment History</div>
-    <div id="logList"></div>
+    <div id="logList" aria-label="Payment history"></div>
 
     <div class="converter-card">
       <div class="converter-title">
@@ -1686,7 +1571,7 @@ body:not(.light-theme) .theme-toggle {
       </div>
       <div class="converter-currency-selectors">
         <div class="converter-currency-row">
-          <label>From:</label>
+          <label for="converterFromCurrency">From:</label>
           <select id="converterFromCurrency">
             <option value="USD" selected>🇺🇸 US Dollar ($)</option>
             <option value="INR">🇮🇳 Indian Rupee (₹)</option>
@@ -1699,7 +1584,7 @@ body:not(.light-theme) .theme-toggle {
           </select>
         </div>
         <div class="converter-currency-row">
-          <label>To:</label>
+          <label for="converterToCurrency">To:</label>
           <select id="converterToCurrency">
             <option value="INR" selected>🇮🇳 Indian Rupee (₹)</option>
             <option value="USD">🇺🇸 US Dollar ($)</option>
@@ -1725,12 +1610,12 @@ body:not(.light-theme) .theme-toggle {
       </div>
       <div class="converter-inputs">
         <div class="converter-field">
-          <label id="fromInputLabel">USD Amount</label>
+          <label id="fromInputLabel" for="fromInput">USD Amount</label>
           <input id="fromInput" type="number" step="0.01" placeholder="100" inputmode="decimal" />
         </div>
         <div class="rate-arrow" style="margin-bottom: 8px;">→</div>
         <div class="converter-field">
-          <label id="toInputLabel">INR Amount</label>
+          <label id="toInputLabel" for="toInput">INR Amount</label>
           <input id="toInput" type="number" step="0.01" placeholder="0.00" inputmode="decimal" />
         </div>
       </div>
@@ -1745,9 +1630,9 @@ body:not(.light-theme) .theme-toggle {
   </div>
 
   <!-- Theme Toggle Button -->
-  <div class="theme-toggle" id="themeToggle" title="Toggle theme">
-    <span class="theme-icon">🌙</span>
-  </div>
+  <button class="theme-toggle" id="themeToggle" type="button" title="Toggle theme" aria-label="Toggle colour theme">
+    <span class="theme-icon" aria-hidden="true">🌙</span>
+  </button>
 
 <script>
   const KEY = 'claude_coding_earnings_log';
@@ -1789,30 +1674,34 @@ body:not(.light-theme) .theme-toggle {
   let currentTotal = 0;
 
   // Theme Management
-  function initTheme() {
-    try {
-      const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
-      if (savedTheme === 'light') {
-        document.body.classList.add('light-theme');
-        themeIcon.textContent = '☀️';
-      } else {
-        themeIcon.textContent = '🌙';
-      }
-    } catch (e) {
-      console.error('Theme init error:', e);
-    }
-  }
+  const THEMES = ['girly', 'dark'];
+  const THEME_ICONS = { girly: '💖', dark: '🌙' };
 
-  function toggleTheme() {
-    document.body.classList.toggle('light-theme');
-    const isLight = document.body.classList.contains('light-theme');
-    themeIcon.textContent = isLight ? '☀️' : '🌙';
-
+  function applyTheme(theme) {
+    document.body.classList.toggle('dark-theme', theme === 'dark');
+    themeIcon.textContent = THEME_ICONS[theme] || THEME_ICONS.girly;
+    const themeColor = theme === 'dark' ? '#080b14' : '#fff0f6';
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) themeColorMeta.setAttribute('content', themeColor);
     try {
-      localStorage.setItem(THEME_KEY, isLight ? 'light' : 'dark');
+      localStorage.setItem(THEME_KEY, theme);
     } catch (e) {
       console.error('Theme save error:', e);
     }
+  }
+
+  function initTheme() {
+    let saved = 'girly';
+    try {
+      saved = localStorage.getItem(THEME_KEY) || 'girly';
+    } catch (e) {
+      console.error('Theme init error:', e);
+    }
+    applyTheme(THEMES.includes(saved) ? saved : 'girly');
+  }
+
+  function toggleTheme() {
+    applyTheme(document.body.classList.contains('dark-theme') ? 'girly' : 'dark');
   }
 
   themeToggle.addEventListener('click', toggleTheme);
@@ -1880,23 +1769,14 @@ body:not(.light-theme) .theme-toggle {
   function animateSlotMachine(targetValue) {
     const targetStr = targetValue.toFixed(2);
     const [whole, dec] = targetStr.split('.');
-
-    console.log('=== SLOT MACHINE DEBUG ===');
-    console.log('Target value:', targetValue);
-    console.log('Whole:', whole, 'Decimal:', dec);
-
     const symbol = getCurrencySymbol(selectedCurrency);
     let html = `<span class="currency">${symbol}</span>`;
 
-    // Create digit wrappers for whole number
+    // Whole-number digit columns
     for (let i = 0; i < whole.length; i++) {
       const targetDigit = parseInt(whole[i]);
-      console.log(`Digit ${i}: target = ${targetDigit}`);
-
       html += `<span class="digit-wrapper">`;
       html += `<span class="digit-column" data-target="${targetDigit}">`;
-
-      // Show 0-9 three times plus target
       for (let roll = 0; roll < 3; roll++) {
         for (let num = 0; num <= 9; num++) {
           html += `<span class="digit">${num}</span>`;
@@ -1908,14 +1788,11 @@ body:not(.light-theme) .theme-toggle {
 
     html += '<span class="currency" style="font-size:0.4em;">.';
 
-    // Create digit wrappers for decimals
+    // Decimal digit columns
     for (let i = 0; i < dec.length; i++) {
       const targetDigit = parseInt(dec[i]);
-      console.log(`Decimal ${i}: target = ${targetDigit}`);
-
       html += `<span class="digit-wrapper">`;
       html += `<span class="digit-column" data-target="${targetDigit}">`;
-
       for (let roll = 0; roll < 3; roll++) {
         for (let num = 0; num <= 9; num++) {
           html += `<span class="digit">${num}</span>`;
@@ -1926,41 +1803,17 @@ body:not(.light-theme) .theme-toggle {
     }
 
     html += '</span>';
-
-    console.log('HTML generated, length:', html.length);
     totalDisplay.innerHTML = html;
 
-    // Trigger slot machine animation
+    // Roll each column to its target digit (30 digits + the final one).
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         const columns = totalDisplay.querySelectorAll('.digit-column');
-        console.log('Found columns:', columns.length);
-
         columns.forEach((col, index) => {
-          const targetDigit = parseInt(col.getAttribute('data-target'));
-          // We have 30 digits (0-9 x 3) + 1 final digit = 31 total
-          // Position 30 is the final digit (index starts at 0)
-          const totalDigits = 30; // Position of the final digit
-          const translateValue = -(totalDigits * 1);
-
-          console.log(`Column ${index}: target=${targetDigit}, position=${totalDigits}, translateY=${translateValue}em`);
-          console.log(`Column ${index} children count:`, col.children.length);
-
           setTimeout(() => {
-            col.style.transform = `translateY(${translateValue}em)`;
-            console.log(`Applied transform to column ${index}`);
-          }, index * 80); // Stagger each digit
+            col.style.transform = 'translateY(-30em)';
+          }, index * 80);
         });
-
-        // After animation completes, check final state
-        setTimeout(() => {
-          console.log('=== ANIMATION COMPLETE ===');
-          columns.forEach((col, index) => {
-            const computedStyle = window.getComputedStyle(col);
-            console.log(`Column ${index} transform:`, computedStyle.transform);
-            console.log(`Column ${index} height:`, col.scrollHeight, 'px');
-          });
-        }, 1000);
       });
     });
   }
@@ -2005,6 +1858,10 @@ body:not(.light-theme) .theme-toggle {
     return div.innerHTML;
   }
 
+  function uid() {
+    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+  }
+
   function renderLog(entries, newEntryId = null) {
     if (entries.length === 0) {
       logList.innerHTML = '<div class="empty">No payments logged yet</div>';
@@ -2014,14 +1871,14 @@ body:not(.light-theme) .theme-toggle {
 
     const symbol = getCurrencySymbol(selectedCurrency);
     logList.innerHTML = sorted.map(e => `
-      <div class="entry ${e.id === newEntryId ? 'new-entry' : ''}" data-id="${e.id}">
+      <div class="entry ${e.id === newEntryId ? 'new-entry' : ''}" data-id="${escapeHtml(String(e.id))}">
         <div class="entry-left">
           <div class="entry-source">${escapeHtml(e.source || 'Unspecified')}</div>
           <div class="entry-date">${formatDate(e.date)}</div>
         </div>
         <div class="entry-right">
           <div class="entry-amount">+${symbol}${Number(e.amount).toFixed(2)}</div>
-          <button class="del-btn" data-id="${e.id}">✕</button>
+          <button class="del-btn" data-id="${escapeHtml(String(e.id))}" aria-label="Delete payment" title="Delete payment">✕</button>
         </div>
       </div>
     `).join('');
@@ -2065,11 +1922,15 @@ body:not(.light-theme) .theme-toggle {
   }
 
   async function refresh() {
-    entries = await loadEntries();
-    if (entries === null) entries = [];
+    const loaded = await loadEntries();
+    const unreadable = loaded === null && !window.storage && localStorage.getItem(KEY) !== null;
+    entries = loaded === null ? [] : loaded;
 
     renderTotal(entries);
     renderLog(entries);
+    if (unreadable) {
+      statusMsg.textContent = '⚠ Saved data could not be read — nothing was deleted';
+    }
     return entries;
   }
 
@@ -2080,7 +1941,7 @@ body:not(.light-theme) .theme-toggle {
       return;
     }
 
-    const newEntryId = Date.now().toString();
+    const newEntryId = uid();
     const newEntry = {
       id: newEntryId,
       amount: amount,
@@ -2112,7 +1973,15 @@ body:not(.light-theme) .theme-toggle {
     }
   });
 
+  // Enter submits, like a native form.
+  [amountInput, sourceInput, dateInput].forEach((el) => {
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); addBtn.click(); }
+    });
+  });
+
   async function deleteEntry(id) {
+    if (!confirm('Delete this payment? The total will update.')) return;
     entries = entries.filter(e => e.id !== id);
     renderTotal(entries);
     renderLog(entries);
@@ -2297,7 +2166,6 @@ body:not(.light-theme) .theme-toggle {
       }, index * 100); // Stagger the fade-out
     });
 
-    console.log('Intro complete - animations slowing down smoothly');
   }, 3000);
 </script>
 </body>

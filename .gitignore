@@ -1,0 +1,23 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.idea/
+.vscode/
+
+# Local tooling (never needed to run the apps)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+
+# Scratch files
+*.local.html
+*.bak
+tmp/
