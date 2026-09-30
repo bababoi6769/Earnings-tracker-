@@ -2,8 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<title>Claude Coding Earnings Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ultimate Earnings Tracker — Earnings &amp; Withdrawals Dashboard</title>
+<meta name="description" content="Track earnings and cash withdrawals in the browser: balances, analytics, charts, date filters and multi-currency support. No accounts, no server — data stays on this device.">
+<meta name="author" content="bababoi6769">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#080b14">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%238b5cf6'/%3E%3Cpath d='M14 42l12-14 9 9 15-19' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
   html, body { width: 100%; overflow-x: hidden; }
@@ -315,7 +320,6 @@
 
   .summary.intro-complete::after {
     animation: float 25s ease-in-out infinite reverse;
-  }
   }
 
   @media (min-width: 768px) {
@@ -2411,6 +2415,52 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
   }
 
   body.girly-theme .recovery-text { color: #7a1f4e; }
+  /* =========================================
+     ACCESSIBILITY & MOTION POLISH
+     ========================================= */
+  /* Delete buttons stay quiet — a small ✕ that only warns on hover. */
+  #logList .del-btn,
+  #withdrawalList .del-btn {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: inherit;
+    opacity: 0.5;
+  }
+
+  #logList .del-btn:hover,
+  #withdrawalList .del-btn:hover {
+    opacity: 1;
+    color: #ff6b6b !important;
+    background: rgba(255, 107, 107, 0.12) !important;
+  }
+
+  button:focus-visible,
+  .pill:focus-visible,
+  .theme-toggle:focus-visible,
+  .del-btn:focus-visible {
+    outline: 2px solid #8b5cf6;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .particles { display: none !important; }
+  }
+
+  @media (max-width: 560px) {
+    .stat-label {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      line-height: 1.35;
+    }
+  }
 </style>
 </head>
 <body>
@@ -2440,7 +2490,7 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
     <!-- Filters -->
     <div class="filter-bar">
       <div class="filter-label">Show:</div>
-      <div class="filter-pills" id="filterPills">
+      <div class="filter-pills" id="filterPills" role="group" aria-label="Date range filter">
         <button class="pill active" data-filter="all" type="button">All time</button>
         <button class="pill" data-filter="year" type="button">This year</button>
         <button class="pill" data-filter="month" type="button">This month</button>
@@ -2449,11 +2499,11 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
       </div>
       <div class="custom-range" id="customRange" hidden>
         <div class="field">
-          <label>From</label>
+          <label for="customFromInput">From</label>
           <input type="date" id="customFromInput" />
         </div>
         <div class="field">
-          <label>To</label>
+          <label for="customToInput">To</label>
           <input type="date" id="customToInput" />
         </div>
       </div>
@@ -2484,27 +2534,27 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
     <!-- Dashboard stat cards -->
     <div class="stat-grid">
       <div class="stat-card">
-        <div class="stat-label">💸 Total Earnings</div>
+        <div class="stat-label"><span aria-hidden="true">💸</span> Total Earnings</div>
         <div class="stat-value" id="statEarnings">₹0.00</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">🏦 Total Withdrawn</div>
+        <div class="stat-label"><span aria-hidden="true">🏦</span> Total Withdrawn</div>
         <div class="stat-value stat-withdrawn" id="statWithdrawn">₹0.00</div>
       </div>
       <div class="stat-card stat-card-balance">
-        <div class="stat-label">💎 Available Balance</div>
+        <div class="stat-label"><span aria-hidden="true">💎</span> Available Balance</div>
         <div class="stat-value stat-balance" id="statBalance">₹0.00</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">📥 Total Payments</div>
+        <div class="stat-label"><span aria-hidden="true">📥</span> Total Payments</div>
         <div class="stat-value" id="statPayments">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">📤 Total Withdrawals</div>
+        <div class="stat-label"><span aria-hidden="true">📤</span> Total Withdrawals</div>
         <div class="stat-value stat-withdrawn" id="statWithdrawals">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">📊 Average Payment</div>
+        <div class="stat-label"><span aria-hidden="true">📊</span> Average Payment</div>
         <div class="stat-value" id="statAvgPayment">₹0.00</div>
       </div>
     </div>
@@ -2514,7 +2564,7 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
     <div class="add-card">
       <div class="add-title">Log a payment</div>
       <div class="currency-selector">
-        <label>Currency:</label>
+        <label for="currencySelect">Currency:</label>
         <select id="currencySelect">
           <option value="INR" selected>🇮🇳 Indian Rupee (₹)</option>
           <option value="USD">🇺🇸 US Dollar ($)</option>
@@ -2528,21 +2578,21 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
       </div>
       <div class="field-row">
         <div class="field">
-          <label>Amount (<span id="currencyLabel">₹</span>)</label>
-          <input id="amountInput" type="number" step="0.01" placeholder="12500.00" inputmode="decimal" />
+          <label for="amountInput">Amount (<span id="currencyLabel">₹</span>)</label>
+          <input id="amountInput" type="number" step="0.01" placeholder="12500.00" inputmode="decimal" autocomplete="off" />
         </div>
         <div class="field">
-          <label>Source</label>
-          <input id="sourceInput" type="text" placeholder="Client / project" />
+          <label for="sourceInput">Source</label>
+          <input id="sourceInput" type="text" placeholder="Client / project" autocomplete="off" />
         </div>
       </div>
       <div class="field-row">
         <div class="field">
-          <label>Date</label>
+          <label for="dateInput">Date</label>
           <input id="dateInput" type="date" />
         </div>
       </div>
-      <button id="addBtn">Add Entry</button>
+      <button id="addBtn" type="button">Add Entry</button>
       <div class="status" id="statusMsg"></div>
     </div>
 
@@ -2550,26 +2600,26 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
       <div class="add-title">💸 Withdraw cash</div>
       <div class="field-row">
         <div class="field">
-          <label>Amount (<span id="withdrawalCurrencyLabel">₹</span>)</label>
-          <input id="withdrawalAmountInput" type="number" step="0.01" placeholder="500.00" inputmode="decimal" />
+          <label for="withdrawalAmountInput">Amount (<span id="withdrawalCurrencyLabel">₹</span>)</label>
+          <input id="withdrawalAmountInput" type="number" step="0.01" placeholder="500.00" inputmode="decimal" autocomplete="off" />
         </div>
         <div class="field">
-          <label>Source / reason</label>
-          <input id="withdrawalSourceInput" type="text" placeholder="Bank transfer, bills..." />
+          <label for="withdrawalSourceInput">Source / reason</label>
+          <input id="withdrawalSourceInput" type="text" placeholder="Bank transfer, bills..." autocomplete="off" />
         </div>
       </div>
       <div class="field-row">
         <div class="field">
-          <label>Date</label>
+          <label for="withdrawalDateInput">Date</label>
           <input id="withdrawalDateInput" type="date" />
         </div>
         <div class="field">
-          <label>Notes (optional)</label>
-          <input id="withdrawalNotesInput" type="text" placeholder="Extra details" />
+          <label for="withdrawalNotesInput">Notes (optional)</label>
+          <input id="withdrawalNotesInput" type="text" placeholder="Extra details" autocomplete="off" />
         </div>
       </div>
-      <button id="withdrawalBtn">Withdraw</button>
-      <div class="status" id="withdrawalStatus"></div>
+      <button id="withdrawalBtn" type="button">Withdraw</button>
+      <div class="status" id="withdrawalStatus" role="status" aria-live="polite"></div>
     </div>
     </div><!-- /duo-grid -->
 
@@ -2577,17 +2627,17 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
     <div class="duo-grid">
       <div>
         <div class="log-title">Payment History</div>
-        <div id="logList"></div>
+        <div id="logList" aria-label="Payment history"></div>
       </div>
       <div>
         <div class="log-title">Withdrawal History</div>
-        <div id="withdrawalList"></div>
+        <div id="withdrawalList" aria-label="Withdrawal history"></div>
       </div>
     </div>
 
     <!-- Analytics Dashboard -->
     <div class="analytics-card">
-      <div class="add-title">📈 Analytics Dashboard</div>
+      <div class="add-title"><span aria-hidden="true">📈 Analytics Dashboard</span> </div>
 
       <div class="fin-grid">
         <div class="fin-card">
@@ -2644,11 +2694,11 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
 
     <div class="converter-card">
       <div class="converter-title">
-        💱 Live Currency Converter
-      </div>
+        <span aria-hidden="true">💱 Live Currency Converter</span> 
+    </div>
       <div class="converter-currency-selectors">
         <div class="converter-currency-row">
-          <label>From:</label>
+          <label for="converterFromCurrency">From:</label>
           <select id="converterFromCurrency">
             <option value="USD" selected>🇺🇸 US Dollar ($)</option>
             <option value="INR">🇮🇳 Indian Rupee (₹)</option>
@@ -2661,7 +2711,7 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
           </select>
         </div>
         <div class="converter-currency-row">
-          <label>To:</label>
+          <label for="converterToCurrency">To:</label>
           <select id="converterToCurrency">
             <option value="INR" selected>🇮🇳 Indian Rupee (₹)</option>
             <option value="USD">🇺🇸 US Dollar ($)</option>
@@ -2687,12 +2737,12 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
       </div>
       <div class="converter-inputs">
         <div class="converter-field">
-          <label id="fromInputLabel">USD Amount</label>
+          <label id="fromInputLabel" for="fromInput">USD Amount</label>
           <input id="fromInput" type="number" step="0.01" placeholder="100" inputmode="decimal" />
         </div>
         <div class="rate-arrow" style="margin-bottom: 8px;">→</div>
         <div class="converter-field">
-          <label id="toInputLabel">INR Amount</label>
+          <label id="toInputLabel" for="toInput">INR Amount</label>
           <input id="toInput" type="number" step="0.01" placeholder="0.00" inputmode="decimal" />
         </div>
       </div>
@@ -2733,7 +2783,7 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
     </div>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="vendor/chart.umd.min.js"></script>
 <script>
   /* ==========================================================
      EARNINGS & WITHDRAWALS TRACKER — PERSONAL FINANCE DASHBOARD
@@ -2999,7 +3049,6 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
       try {
         if (!window.storage) localStorage.removeItem(LEGACY_KEY);
       } catch (e) { /* keep going */ }
-      console.log('Migrated', arr.length, 'legacy payment(s) into', PAYMENTS_KEY);
     } catch (e) {
       console.error('Migration error:', e);
     }
@@ -3058,6 +3107,9 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
     if (theme === 'light') document.body.classList.add('light-theme');
     if (theme === 'girly') document.body.classList.add('girly-theme');
     themeIcon.textContent = THEME_ICONS[theme];
+    const themeColor = { dark: '#080b14', light: '#fff7fb', girly: '#fff0f6' }[theme] || '#080b14';
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) themeColorMeta.setAttribute('content', themeColor);
     try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* ignore */ }
     safeRun('renderCharts', renderCharts); // re-theme charts for the active theme
   }
@@ -3319,6 +3371,11 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
     return div.innerHTML;
   }
 
+  // Collision-safe entry id: Date.now() alone can repeat within the same millisecond.
+  function uid() {
+    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+  }
+
   // ---------- Hero / totals ----------
   function renderTotal(animate = false) {
     const pays = getFilteredPayments();
@@ -3377,14 +3434,14 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
     const sorted = [...pays].sort((a, b) => new Date(b.date) - new Date(a.date));
     const symbol = getCurrencySymbol(selectedCurrency);
     logList.innerHTML = sorted.map(e => `
-      <div class="entry ${e.id === newEntryId ? 'new-entry' : ''}" data-id="${e.id}">
+      <div class="entry ${e.id === newEntryId ? 'new-entry' : ''}" data-id="${escapeHtml(String(e.id))}">
         <div class="entry-left">
           <div class="entry-source">${escapeHtml(e.source || 'Unspecified')}</div>
           <div class="entry-date">${formatDate(e.date)}</div>
         </div>
         <div class="entry-right">
           <div class="entry-amount">+${symbol}${Number(e.amount).toFixed(2)}</div>
-          <button class="del-btn" data-id="${e.id}">✕</button>
+          <button class="del-btn" data-id="${escapeHtml(String(e.id))}" aria-label="Delete payment" title="Delete payment">✕</button>
         </div>
       </div>
     `).join('');
@@ -3404,7 +3461,7 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
     const sorted = [...wdrs].sort((a, b) => new Date(b.date) - new Date(a.date));
     const symbol = getCurrencySymbol(selectedCurrency);
     withdrawalList.innerHTML = sorted.map(w => `
-      <div class="entry ${w.id === newWithdrawalId ? 'new-entry' : ''}" data-id="${w.id}">
+      <div class="entry ${w.id === newWithdrawalId ? 'new-entry' : ''}" data-id="${escapeHtml(String(w.id))}">
         <div class="entry-left">
           <div class="entry-source">${escapeHtml(w.source || 'Withdrawal')}</div>
           <div class="entry-date">${formatDate(w.date)}</div>
@@ -3412,7 +3469,7 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
         </div>
         <div class="entry-right">
           <div class="entry-amount entry-amount-withdrawal">−${symbol}${Number(w.amount).toFixed(2)}</div>
-          <button class="del-btn" data-id="${w.id}">✕</button>
+          <button class="del-btn" data-id="${escapeHtml(String(w.id))}" aria-label="Delete withdrawal" title="Delete withdrawal">✕</button>
         </div>
       </div>
     `).join('');
@@ -3700,7 +3757,7 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
       return;
     }
 
-    const id = Date.now().toString();
+    const id = uid();
     // Update in-memory state first so the UI and totals never depend on a
     // fresh storage read (which is what was silently dropping prior entries).
     payments.push({
@@ -3743,7 +3800,7 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
       return;
     }
 
-    const id = Date.now().toString();
+    const id = uid();
     withdrawals.push({
       id: id,
       amount: amount,
@@ -3768,6 +3825,18 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
       }, 500);
     }
   }
+
+  // Enter submits, like a native form.
+  [amountInput, sourceInput, dateInput].forEach((el) => {
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); addPayment(); }
+    });
+  });
+  [withdrawalAmountInput, withdrawalSourceInput, withdrawalDateInput, withdrawalNotesInput].forEach((el) => {
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); addWithdrawal(); }
+    });
+  });
 
   async function deleteWithdrawal(id) {
     if (!confirm('Delete this withdrawal? Balance and analytics will update.')) return;
@@ -3971,7 +4040,6 @@ body:not(.light-theme):not(.girly-theme) .theme-toggle {
       }, index * 100); // Stagger the fade-out
     });
 
-    console.log('Intro complete - animations slowing down smoothly');
   }, 3000);
 
   // ---------- Init ----------
