@@ -22,6 +22,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(join(ROOT, p), 'utf8');
 
 const APPS = [
+  { name: 'Landing page', path: 'index.html', vendors: [] },
   { name: 'Ultimate Earnings Tracker', path: 'apps/ultimate/index.html', vendors: ['apps/ultimate/vendor/chart.umd.min.js'] },
   { name: 'Girly Pop Edition', path: 'apps/girlypop/index.html', vendors: [] },
   { name: 'Dark Edition', path: 'apps/dark/index.html', vendors: [] },

@@ -23,8 +23,12 @@ open apps/ultimate/index.html          # macOS
 start apps/ultimate/index.html         # Windows
 xdg-open apps/ultimate/index.html      # Linux
 
-# 2. Or serve the folder if you prefer a real URL
+# 2. Or open the launcher page, which links to all three editions
+open index.html
+
+# 3. Or serve the folder if you prefer a real URL
 python3 -m http.server 8000
+# → http://localhost:8000/          (launcher)
 # → http://localhost:8000/apps/ultimate/
 ```
 
@@ -85,6 +89,7 @@ Extra polish that is baked into every edition:
 
 ```
 .
+├── index.html                       # launcher page linking to all three editions
 ├── apps/
 │   ├── ultimate/index.html          # earnings + withdrawals + analytics
 │   │   └── vendor/chart.umd.min.js  # Chart.js 4.4.1 (MIT), served locally
